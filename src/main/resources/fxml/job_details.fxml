@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f8fafc; -fx-border-color: transparent;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.JobDetailsController">
+    <VBox spacing="15.0">
+        <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
+        </padding>
+        
+        <Button mnemonicParsing="false" onAction="#handleBack" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 5; -fx-background-radius: 5; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 8 15; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" text="← Back to Dashboard" />
+        
+        <HBox spacing="30.0">
+            <!-- LEFT SIDE (70% width approx) -->
+            <VBox prefWidth="650.0" spacing="25.0" HBox.hgrow="ALWAYS">
+            
+            <VBox spacing="10.0" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                <Label fx:id="lblJobTitle" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #0f172a;" text="Software Engineer" />
+                <Label fx:id="lblCompanyName" style="-fx-font-size: 18px; -fx-text-fill: #3b82f6; -fx-cursor: hand;" onMouseClicked="#handleCompanyClick" onMouseEntered="#handleCompanyEnter" onMouseExited="#handleCompanyExit" text="Company Name" />
+                
+                <HBox spacing="20.0">
+                    <Label fx:id="lblDatePosted" style="-fx-text-fill: #64748b; -fx-font-size: 14px;" text=" Apr 20, 2026" />
+                    <Label fx:id="lblSalaryHeader" style="-fx-text-fill: #059669; -fx-font-size: 14px; -fx-font-weight: bold;" text="Negotiable" />
+                </HBox>
+                
+                <Region prefHeight="10.0" />
+                <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Job Description" />
+                
+                <Label fx:id="lblDescription" style="-fx-text-fill: #475569; -fx-font-size: 15px; -fx-line-spacing: 5px;" text="Description goes here" wrapText="true" />
+                
+                <Region prefHeight="10.0" />
+                
+                <!-- Extra Job Details List -->
+                <VBox spacing="12.0">
+                    <HBox spacing="10.0">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #334155; -fx-pref-width: 150;" text=".Required Number:" />
+                        <Label fx:id="lblRequiredNumber" style="-fx-text-fill: #475569;" text="1" />
+                    </HBox>
+                    <HBox spacing="10.0">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #334155; -fx-pref-width: 150;" text=".Department:" />
+                        <Label fx:id="lblDepartment" style="-fx-text-fill: #475569;" text="Engineering" />
+                    </HBox>
+                    <HBox spacing="10.0">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #334155; -fx-pref-width: 150;" text=".Reports To:" />
+                        <Label fx:id="lblReportsTo" style="-fx-text-fill: #475569;" text="Engineering Manager" />
+                    </HBox>
+                    <HBox spacing="10.0">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #334155; -fx-pref-width: 150;" text="• Education Qualification:" />
+                        <Label fx:id="lblEducation" style="-fx-text-fill: #475569;" text="Bachelor's Degree" />
+                    </HBox>
+                </VBox>
+                
+            </VBox>
+            <!-- Social Media Icons below main card -->
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #64748b;" text="Share:" />
+                <Button onAction="#handleFacebook" style="-fx-background-color: transparent; -fx-text-fill: #1877f2; -fx-cursor: hand; -fx-font-weight: bold;" text="Facebook" />
+                <Button onAction="#handleLinkedIn" style="-fx-background-color: transparent; -fx-text-fill: #0a66c2; -fx-cursor: hand; -fx-font-weight: bold;" text="LinkedIn" />
+                <Button onAction="#handleTelegram" style="-fx-background-color: transparent; -fx-text-fill: #0088cc; -fx-cursor: hand; -fx-font-weight: bold;" text="Telegram" />
+            </HBox>
+        </VBox>
+        <VBox minWidth="300.0" prefWidth="300.0" spacing="20.0">
+            
+            <VBox spacing="15.0" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Job Details" />
+                
+                <VBox spacing="15.0">
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <Label style="-fx-font-size: 20px;" text=" " />
+                        <VBox>
+                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Location" />
+                            <Label fx:id="lblLocation" style="-fx-font-weight: bold; -fx-text-fill: #334155; -fx-font-size: 14px;" text="New York, NY" />
+                        </VBox>
+                    </HBox>
+                    
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <Label style="-fx-font-size: 20px;" text=" " />
+                        <VBox>
+                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Employment Type" />
+                            <Label fx:id="lblEmploymentType" style="-fx-font-weight: bold; -fx-text-fill: #334155; -fx-font-size: 14px;" text="Full-Time" />
+                        </VBox>
+                    </HBox>
+                    
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <Label style="-fx-font-size: 20px;" />
+                        <VBox>
+                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Shift" />
+                            <Label fx:id="lblShift" style="-fx-font-weight: bold; -fx-text-fill: #334155; -fx-font-size: 14px;" text="Day Shift" />
+                        </VBox>
+                    </HBox>
+                    
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <Label style="-fx-font-size: 20px;" text=" " />
+                        <VBox>
+                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Career Level" />
+                            <Label fx:id="lblCareerLevel" style="-fx-font-weight: bold; -fx-text-fill: #334155; -fx-font-size: 14px;" text="Mid Level" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+                
+            </VBox>
+            <Button fx:id="btnApply" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleApply" style="-fx-background-color:  #0ea5e9; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 15; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect:  dropshadow(three-pass-box, rgba(14, 165, 233, 0.4), 10, 0, 0, 4);" text="Apply Now" />
+            
+        </VBox>
+        
+    </HBox>
+    </VBox>
+</ScrollPane>

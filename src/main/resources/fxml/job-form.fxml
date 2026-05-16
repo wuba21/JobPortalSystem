@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane stylesheets="@../css/style.css" styleClass="root-pane" fitToWidth="true" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.JobFormController">
+    <VBox alignment="TOP_CENTER" spacing="15" styleClass="root-pane">
+        <padding><Insets bottom="20" left="50" right="50" top="20" /></padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Label styleClass="title-label" text="Post a New Job" />
+        </HBox>
+
+        <VBox alignment="CENTER_LEFT" maxWidth="500" spacing="10">
+            <Label styleClass="field-label" text="Job Title *" />
+            <TextField fx:id="titleField" promptText="e.g. Software Engineer" styleClass="text-field-custom" />
+
+            <Label styleClass="field-label" text="Description *" />
+            <TextArea fx:id="descriptionField" prefRowCount="4" promptText="Job description..." styleClass="text-area-custom" wrapText="true" />
+
+            <Label styleClass="field-label" text="Requirements" />
+            <TextArea fx:id="requirementsField" prefRowCount="3" promptText="Job requirements..." styleClass="text-area-custom" wrapText="true" />
+
+            <Label styleClass="field-label" text="Location *" />
+            <TextField fx:id="locationField" promptText="e.g. New York, NY" styleClass="text-field-custom" />
+
+            <HBox spacing="15">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Department" />
+                    <TextField fx:id="departmentField" promptText="e.g. IT, Sales" styleClass="text-field-custom" />
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Reports To" />
+                    <TextField fx:id="reportsToField" promptText="e.g. Engineering Manager" styleClass="text-field-custom" />
+                </VBox>
+            </HBox>
+
+            <HBox spacing="15">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Required Number (Openings)" />
+                    <TextField fx:id="requiredNumberField" promptText="e.g. 1" styleClass="text-field-custom" />
+                </VBox>
+            </HBox>
+
+            <Label styleClass="field-label" text="Education Qualifications" />
+            <TextArea fx:id="educationQualificationField" prefRowCount="3" promptText="Required degrees, certifications..." styleClass="text-area-custom" wrapText="true" />
+
+            <HBox spacing="15">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Min Salary" />
+                    <TextField fx:id="salaryMinField" promptText="e.g. 50000" styleClass="text-field-custom" />
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Max Salary" />
+                    <TextField fx:id="salaryMaxField" promptText="e.g. 80000" styleClass="text-field-custom" />
+                </VBox>
+            </HBox>
+
+            <Label styleClass="field-label" text="Job Type *" />
+            <ComboBox fx:id="jobTypeCombo" maxWidth="Infinity" styleClass="combo-custom" />
+
+            <Label styleClass="field-label" text="Category" />
+            <TextField fx:id="categoryField" promptText="e.g. Technology" styleClass="text-field-custom" />
+
+            <Label styleClass="field-label" text="Experience Level" />
+            <ComboBox fx:id="experienceCombo" maxWidth="Infinity" styleClass="combo-custom" />
+
+            <HBox spacing="15">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Start Date" />
+                    <DatePicker fx:id="startDatePicker" maxWidth="Infinity" styleClass="combo-custom" />
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Application Deadline" />
+                    <DatePicker fx:id="deadlinePicker" maxWidth="Infinity" styleClass="combo-custom" />
+                </VBox>
+            </HBox>
+
+            <Label styleClass="title-label" text="Contact &amp; Social Links" style="-fx-font-size:16px; -fx-padding: 10 0 5 0;" />
+            <HBox spacing="15">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Contact Email" />
+                    <TextField fx:id="contactEmailField" promptText="e.g. hr@company.com" styleClass="text-field-custom" />
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Telegram" />
+                    <TextField fx:id="telegramLinkField" promptText="e.g. t.me/hr" styleClass="text-field-custom" />
+                </VBox>
+            </HBox>
+            <HBox spacing="15">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Website Link" />
+                    <TextField fx:id="websiteLinkField" promptText="e.g. company.com" styleClass="text-field-custom" />
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="LinkedIn Link" />
+                    <TextField fx:id="linkedinLinkField" promptText="e.g. linkedin.com/..." styleClass="text-field-custom" />
+                </VBox>
+            </HBox>
+
+            <Button maxWidth="Infinity" onAction="#handlePostJob" styleClass="btn-success" text="Post Job" />
+        </VBox>
+      <Button onAction="#handleBack" maxWidth="Infinity" styleClass="btn-link" text="Back to Dashboard" />
+    </VBox>
+</ScrollPane>

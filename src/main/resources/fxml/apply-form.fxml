@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ProgressIndicator?>
+
+<ScrollPane stylesheets="@../css/style.css" styleClass="root-pane" fitToWidth="true" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.ApplyController">
+    <VBox alignment="TOP_CENTER" spacing="15" styleClass="root-pane">
+        <padding><Insets bottom="40" left="50" right="50" top="40" /></padding>
+
+        <VBox alignment="CENTER" spacing="10">
+            <Label styleClass="title-label" text="Submit Your Application" />
+            <Label fx:id="jobTitleLabel" styleClass="subtitle-label" text="Applying for: Job Title" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+            
+           
+        <VBox alignment="CENTER_LEFT" maxWidth="500" spacing="10" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+            
+            <Label styleClass="field-label" text="Job Seeker Information" style="-fx-font-size: 18px; -fx-text-fill: #1a237e; -fx-margin-bottom: 5;"/>
+            
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label styleClass="field-label" text="Full Name:" prefWidth="100"/>
+                <TextField fx:id="fullNameField" styleClass="text-field-custom" HBox.hgrow="ALWAYS" promptText="Enter full name"/>
+            </HBox>
+            
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label styleClass="field-label" text="Email Address:" prefWidth="100"/>
+                <TextField fx:id="emailField" styleClass="text-field-custom" HBox.hgrow="ALWAYS" promptText="Enter email address"/>
+            </HBox>
+            
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label styleClass="field-label" text="Phone Number:" prefWidth="100"/>
+                <TextField fx:id="phoneField" styleClass="text-field-custom" HBox.hgrow="ALWAYS" promptText="Enter phone number"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label styleClass="field-label" text="Address:" prefWidth="100"/>
+                <TextField fx:id="addressField" styleClass="text-field-custom" HBox.hgrow="ALWAYS" promptText="Enter your address"/>
+            </HBox>
+
+            <Label styleClass="field-label" text="CV/Resume *" style="-fx-padding: 10 0 0 0;"/>
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Button onAction="#handleUploadResume" styleClass="btn-secondary" text="Upload File" />
+                <Label fx:id="selectedFileLabel" text="No file selected..." style="-fx-text-fill: #64748b;"/>
+            </HBox>
+
+            <Label styleClass="field-label" text="Cover Letter (Optional)" style="-fx-padding: 10 0 0 0;"/>
+            <TextArea fx:id="coverLetterArea" prefRowCount="5" promptText="Write why you are a good fit for this role..." styleClass="text-area-custom" wrapText="true" />
+
+            <VBox spacing="10" style="-fx-padding: 20 0 0 0;">
+                <StackPane maxWidth="Infinity">
+                    <Button fx:id="submitButton" maxWidth="Infinity" onAction="#handleSubmitApplication" styleClass="btn-success" style="-fx-pref-height: 45px; -fx-font-size: 16px;" text="Submit Application" />
+                    <ProgressIndicator fx:id="submitProgress" visible="false" style="-fx-max-width: 25; -fx-max-height: 25;"/>
+                </StackPane>
+                <Button maxWidth="Infinity" onAction="#handleCancel" styleClass="btn-link" text="Cancel Application" />
+            </VBox>
+        </VBox>
+    </VBox>
+     <VBox fx:id="contactInfoBox" alignment="CENTER" spacing="5" style="-fx-background-color: #e0f7fa; -fx-padding: 10; -fx-background-radius: 8;">
+                <Label text="Employer Contact Information" style="-fx-font-weight: bold; -fx-text-fill: #006064;"/>
+                <HBox alignment="CENTER" spacing="15">
+                    <Label fx:id="contactEmailLabel" text="" style="-fx-text-fill: #00838f;"/>
+                    <Label fx:id="telegramLabel" text="" style="-fx-text-fill: #00838f;"/>
+                    <Label fx:id="websiteLabel" text="" style="-fx-text-fill: #00838f;"/>
+                    <Label fx:id="linkedinLabel" text="" style="-fx-text-fill: #00838f;"/>
+                </HBox>
+            </VBox>
+        </VBox>
+
+</ScrollPane>

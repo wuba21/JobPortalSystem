@@ -1,0 +1,63 @@
+
+CREATE DATABASE IF NOT EXISTS job_portal;
+USE job_portal;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    address TEXT,
+    user_type ENUM('JOB_SEEKER', 'EMPLOYER', 'ADMIN') NOT NULL DEFAULT 'JOB_SEEKER',
+    profile_picture VARCHAR(255),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS employers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE,
+    company_name VARCHAR(150) NOT NULL,
+    industry VARCHAR(100),
+    company_description TEXT,
+    website VARCHAR(255),
+    company_size VARCHAR(50),
+    is_verified BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS jobs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employer_id INT NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    description TEXT NOT NULL,
+    requirements TEXT,
+    location VARCHAR(100),
+    salary_min DECIMAL(10,2),
+    salary_max DECIMAL(10,2),
+    job_type ENUM('FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'REMOTE') NOT NULL DEFAULT 'FULL_TIME',
+    category VARCHAR(100),
+    experience_level ENUM('ENTRY', 'MID', 'SENIOR', 'EXECUTIVE') DEFAULT 'ENTRY',
+    is_active BOOLEAN DEFAULT TRUE,
+    deadline DATE,
+    posted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (employer_id) REFERENCES employers(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS applications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    job_id INT NOT NULL,
+    user_id INT NOT NULL,
+    cover_letter TEXT,
+    resume_path VARCHAR(255),
+    status ENUM('PENDING', 'REVIEWED', 'SHORTLISTED', 'REJECTED', 'ACCEPTED') NOT NULL DEFAULT 'PENDING',
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_application (job_id, user_id)
+);
+INSERT INTO users (full_name, email, password, user_type)
+VALUES ('System Admin', 'admin@jobportal.com', 'admin123', 'ADMIN');

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.StackPane?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f8fafc;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox alignment="CENTER" spacing="50.0">
+        <padding>
+            <Insets bottom="60.0" left="60.0" right="60.0" top="60.0" />
+        </padding>
+
+        <!-- Banner / Intro -->
+        <VBox alignment="CENTER" spacing="15.0" style="-fx-background-color: linear-gradient(to right, #0ea5e9, #3b82f6); -fx-padding: 60; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 10);" maxWidth="900.0">
+            <Label style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: white;" text="About JobPortal" />
+            <Label style="-fx-font-size: 18px; -fx-text-fill: #e0f2fe; -fx-alignment: center;" text="Empowering professionals and companies to connect, grow, and succeed together." wrapText="true" maxWidth="600.0" />
+        </VBox>
+
+        <HBox spacing="40.0" maxWidth="900.0" alignment="CENTER">
+            <VBox spacing="15.0" style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 15, 0, 0, 5);" HBox.hgrow="ALWAYS">
+                <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Our Mission " />
+                <Label style="-fx-font-size: 16px; -fx-text-fill: #64748b; -fx-line-spacing: 5px;" text="To create a seamless and intelligent platform that
+ bridges the gap between top talent and innovative companies in Ethiopia. We believe in providing equal
+ opportunities for everyone to build their dream career." wrapText="true" />
+            </VBox>
+            
+            <VBox spacing="15.0" style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 15, 0, 0, 5);"
+                  HBox.hgrow="ALWAYS">
+                <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Our Vision " />
+                <Label style="-fx-font-size: 16px; -fx-text-fill: #64748b; -fx-line-spacing: 5px;" text="To become the most trusted and efficient global hub for career advancement,
+ ensuring every individual finds a fulfilling job and every company discovers 
+their perfect candidate." wrapText="true" />
+            </VBox>
+        </HBox>
+
+    </VBox>
+</ScrollPane>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.StackPane?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f8fafc;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.CompaniesController">
+    <VBox alignment="CENTER" spacing="40.0">
+        <padding>
+            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+        </padding>
+        <VBox alignment="CENTER" spacing="10.0">
+            <Label style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #0f172a;" text="Top Companies Hiring Now" />
+            <Label style="-fx-font-size: 16px; -fx-text-fill: #64748b;" text="Discover and apply to the Ethiopia's most innovative companies." />
+        </VBox>
+        <FlowPane fx:id="companiesContainer" alignment="CENTER" hgap="30.0" vgap="30.0" prefWrapLength="800.0">
+            <!-- Dynamic content loaded from database -->
+        </FlowPane>
+    </VBox>
+</ScrollPane>

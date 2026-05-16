@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.Region?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f8fafc;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.ContactController">
+    <VBox alignment="CENTER" spacing="40.0">
+        <padding>
+            <Insets bottom="60.0" left="60.0" right="60.0" top="60.0" />
+        </padding>
+
+        <VBox alignment="CENTER" spacing="10.0">
+            <Label style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #0f172a;" text="Contact us " />
+            <Label style="-fx-font-size: 16px; -fx-text-fill: #64748b;" text="We'd love to hear from you. Please fill out the form below." />
+        </VBox>
+
+        <HBox spacing="50.0" maxWidth="1000.0" alignment="CENTER">
+            
+            <!-- Contact Information -->
+            <VBox spacing="25.0" style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 15, 0, 0, 5);" prefWidth="400.0" VBox.vgrow="ALWAYS">
+                <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Contact Information" />
+                
+                <VBox spacing="10.0">
+                    <Label style="-fx-font-size: 18px; -fx-text-fill: #0ea5e9;" text=" Office Address" />
+                    <Label style="-fx-font-size: 15px; -fx-text-fill: #475569;" text="UOG ETHIOPIA " />
+                    <Label style="-fx-font-size: 15px; -fx-text-fill: #475569;" text="INFORMATICS COLLEAGE, Comp Sci " />
+                </VBox>
+
+                <VBox spacing="10.0">
+                    <Label style="-fx-font-size: 18px; -fx-text-fill: #0ea5e9;" text="Phone" />
+                    <Label style="-fx-font-size: 15px; -fx-text-fill: #475569;" text="0939304457 /0172112272" />
+                </VBox>
+
+                <VBox spacing="10.0">
+                    <Label style="-fx-font-size: 18px; -fx-text-fill: #0ea5e9;" text=  "️ Email" />
+                    <Label style="-fx-font-size: 15px; -fx-text-fill: #475569;" text="online@jobportal.com" />
+                </VBox>
+            </VBox>
+
+            <!-- Contact Form -->
+            <VBox spacing="20.0" style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 15, 0, 0, 5);" prefWidth="500.0">
+                <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Send us a Message" />
+                
+                <VBox spacing="5.0">
+                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="Full Name" />
+                    <TextField fx:id="nameField" promptText="wubante til" style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #cbd5e1; -fx-border-radius: 5; -fx-background-color: #f8fafc;" />
+                </VBox>
+
+                <VBox spacing="5.0">
+                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="Email Address" />
+                    <TextField fx:id="emailField" promptText="wubante@gmail.com" style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #cbd5e1; -fx-border-radius: 5; -fx-background-color: #f8fafc;" />
+                </VBox>
+
+                <VBox spacing="5.0">
+                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="Subject" />
+                    <TextField fx:id="subjectField" promptText="E.g. Support Request" style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #cbd5e1; -fx-border-radius: 5; -fx-background-color: #f8fafc;" />
+                </VBox>
+
+                <VBox spacing="5.0">
+                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="Message" />
+                    <TextArea fx:id="messageArea" promptText="How can we help you?" prefRowCount="5" style="-fx-padding: 5; -fx-background-radius: 5; -fx-border-color: #cbd5e1; -fx-border-radius: 5; -fx-background-color: #f8fafc;" />
+                </VBox>
+
+                <Button onAction="#handleSendMessage" maxWidth="1.7976931348623157E308" text="Send Message" style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 12; -fx-background-radius: 8; -fx-cursor: hand;" />
+            </VBox>
+        </HBox>
+    </VBox>
+</ScrollPane>

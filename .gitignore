@@ -1,0 +1,15 @@
+target/
+.idea/
+.vscode/
+.settings/
+.project/
+.classpath/
+bin/
+*.log
+.gemini/
+nbactions.xml
+apache-maven-3.9.6/
+maven.zip
+output.txt
+logs/
+uploads/
