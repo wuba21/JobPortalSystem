@@ -67,7 +67,29 @@ public class DBConnection {
         try (java.sql.Statement s = connection.createStatement()) {
             s.execute("ALTER TABLE users ADD COLUMN gender VARCHAR(20)");
         } catch (Exception ignored) {}
+        try (java.sql.Statement s = connection.createStatement()) {
+            s.execute("CREATE TABLE IF NOT EXISTS notifications (" +
+                      "id INT AUTO_INCREMENT PRIMARY KEY," +
+                      "user_id INT NOT NULL," +
+                      "message TEXT NOT NULL," +
+                      "is_read BOOLEAN DEFAULT FALSE," +
+                      "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                      "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE" +
+                      ")");
+        } catch (Exception ignored) {}
+        try (java.sql.Statement s = connection.createStatement()) {
+            s.execute("CREATE TABLE IF NOT EXISTS saved_jobs (" +
+                      "id INT AUTO_INCREMENT PRIMARY KEY," +
+                      "user_id INT NOT NULL," +
+                      "job_id INT NOT NULL," +
+                      "saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                      "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE," +
+                      "FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE," +
+                      "UNIQUE KEY unique_saved_job (user_id, job_id)" +
+                      ")");
+        } catch (Exception ignored) {}
     }
+
 
     public static void closeConnection() {
     }

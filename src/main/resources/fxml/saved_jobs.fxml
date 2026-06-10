@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.SavedJobsController">
+    <VBox spacing="20.0">
+        <padding>
+            <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+        </padding>
+        <HBox alignment="CENTER_LEFT">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="My Saved Jobs" />
+        </HBox>
+        <Label fx:id="emptyLabel" style="-fx-text-fill: #64748b; -fx-font-size: 16px;" text="You haven't saved any jobs yet." visible="false" managed="false"/>
+        <VBox fx:id="jobsContainer" spacing="15.0" />
+    </VBox>
+</ScrollPane>

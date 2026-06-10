@@ -21,6 +21,7 @@ import java.util.Optional;
 public class AdminDashboardController {
 
     @FXML private VBox jobsView;
+    @FXML private VBox reportsView;
     @FXML private TableView<Job> jobsTable;
     @FXML private TableColumn<Job, String> colJobTitle;
     @FXML private TableColumn<Job, String> colJobCompany;
@@ -79,14 +80,160 @@ public class AdminDashboardController {
 
     @FXML
     private void showManageJobs() {
+        if (reportsView != null) {
+            reportsView.setVisible(false);
+            reportsView.setManaged(false);
+        }
         jobsView.setVisible(true);
         jobsView.setManaged(true);
         loadJobs();
     }
 
     @FXML
+    private void showReports() {
+        jobsView.setVisible(false);
+        jobsView.setManaged(false);
+        if (reportsView != null) {
+            reportsView.setVisible(true);
+            reportsView.setManaged(true);
+        }
+    }
+
+    @FXML
     private void handleBack() {
         MainApp.changeScene("dashboard.fxml", "Dashboard");
+    }
+
+    @FXML
+    private void handleExportUsersPDF() {
+        Task<Void> task = new Task<Void>() {
+            @Override protected Void call() throws Exception {
+                List<com.jobportal.model.User> users = new com.jobportal.service.UserService().findAll();
+                String[] headers = {"ID", "Full Name", "Email", "Role", "Phone"};
+                List<List<String>> rows = new java.util.ArrayList<>();
+                for (com.jobportal.model.User u : users) {
+                    rows.add(java.util.Arrays.asList(
+                        String.valueOf(u.getId()), u.getFullName(), u.getEmail(), u.getUserType(), u.getPhone()
+                    ));
+                }
+                java.io.File file = new java.io.File(System.getProperty("user.home") + "/Desktop/UsersReport.pdf");
+                com.jobportal.util.ExportUtil.exportToPDF("Users Report", headers, rows, file);
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> AlertUtil.showInfo("Export Successful", "Users report saved as PDF to Desktop."));
+        task.setOnFailed(e -> { e.getSource().getException().printStackTrace(); AlertUtil.showError("Export Error", "Failed to export Users PDF."); });
+        new Thread(task).start();
+    }
+
+    @FXML
+    private void handleExportUsersExcel() {
+        Task<Void> task = new Task<Void>() {
+            @Override protected Void call() throws Exception {
+                List<com.jobportal.model.User> users = new com.jobportal.service.UserService().findAll();
+                String[] headers = {"ID", "Full Name", "Email", "Role", "Phone"};
+                List<List<String>> rows = new java.util.ArrayList<>();
+                for (com.jobportal.model.User u : users) {
+                    rows.add(java.util.Arrays.asList(
+                        String.valueOf(u.getId()), u.getFullName(), u.getEmail(), u.getUserType(), u.getPhone()
+                    ));
+                }
+                java.io.File file = new java.io.File(System.getProperty("user.home") + "/Desktop/UsersReport.xlsx");
+                com.jobportal.util.ExportUtil.exportToExcel("Users Report", headers, rows, file);
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> AlertUtil.showInfo("Export Successful", "Users report saved as Excel to Desktop."));
+        task.setOnFailed(e -> AlertUtil.showError("Export Error", "Failed to export Users Excel."));
+        new Thread(task).start();
+    }
+
+    @FXML
+    private void handleExportJobsPDF() {
+        Task<Void> task = new Task<Void>() {
+            @Override protected Void call() throws Exception {
+                List<Job> jobs = jobService.findAll();
+                String[] headers = {"ID", "Title", "Company", "Location", "Type", "Salary"};
+                List<List<String>> rows = new java.util.ArrayList<>();
+                for (Job j : jobs) {
+                    rows.add(java.util.Arrays.asList(
+                        String.valueOf(j.getId()), j.getTitle(), j.getCompanyName(), j.getLocation(), j.getJobType(), String.valueOf(j.getSalaryMin())
+                    ));
+                }
+                java.io.File file = new java.io.File(System.getProperty("user.home") + "/Desktop/JobsReport.pdf");
+                com.jobportal.util.ExportUtil.exportToPDF("Jobs Report", headers, rows, file);
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> AlertUtil.showInfo("Export Successful", "Jobs report saved as PDF to Desktop."));
+        task.setOnFailed(e -> AlertUtil.showError("Export Error", "Failed to export Jobs PDF."));
+        new Thread(task).start();
+    }
+
+    @FXML
+    private void handleExportJobsExcel() {
+        Task<Void> task = new Task<Void>() {
+            @Override protected Void call() throws Exception {
+                List<Job> jobs = jobService.findAll();
+                String[] headers = {"ID", "Title", "Company", "Location", "Type", "Salary"};
+                List<List<String>> rows = new java.util.ArrayList<>();
+                for (Job j : jobs) {
+                    rows.add(java.util.Arrays.asList(
+                        String.valueOf(j.getId()), j.getTitle(), j.getCompanyName(), j.getLocation(), j.getJobType(), String.valueOf(j.getSalaryMin())
+                    ));
+                }
+                java.io.File file = new java.io.File(System.getProperty("user.home") + "/Desktop/JobsReport.xlsx");
+                com.jobportal.util.ExportUtil.exportToExcel("Jobs Report", headers, rows, file);
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> AlertUtil.showInfo("Export Successful", "Jobs report saved as Excel to Desktop."));
+        task.setOnFailed(e -> AlertUtil.showError("Export Error", "Failed to export Jobs Excel."));
+        new Thread(task).start();
+    }
+
+    @FXML
+    private void handleExportAppsPDF() {
+        Task<Void> task = new Task<Void>() {
+            @Override protected Void call() throws Exception {
+                List<com.jobportal.model.Application> apps = new com.jobportal.service.ApplicationService().findAll();
+                String[] headers = {"App ID", "User ID", "Job ID", "Status"};
+                List<List<String>> rows = new java.util.ArrayList<>();
+                for (com.jobportal.model.Application a : apps) {
+                    rows.add(java.util.Arrays.asList(
+                        String.valueOf(a.getId()), String.valueOf(a.getUserId()), String.valueOf(a.getJobId()), a.getStatus()
+                    ));
+                }
+                java.io.File file = new java.io.File(System.getProperty("user.home") + "/Desktop/ApplicationsReport.pdf");
+                com.jobportal.util.ExportUtil.exportToPDF("Applications Report", headers, rows, file);
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> AlertUtil.showInfo("Export Successful", "Applications report saved as PDF to Desktop."));
+        task.setOnFailed(e -> AlertUtil.showError("Export Error", "Failed to export Applications PDF."));
+        new Thread(task).start();
+    }
+
+    @FXML
+    private void handleExportAppsExcel() {
+        Task<Void> task = new Task<Void>() {
+            @Override protected Void call() throws Exception {
+                List<com.jobportal.model.Application> apps = new com.jobportal.service.ApplicationService().findAll();
+                String[] headers = {"App ID", "User ID", "Job ID", "Status"};
+                List<List<String>> rows = new java.util.ArrayList<>();
+                for (com.jobportal.model.Application a : apps) {
+                    rows.add(java.util.Arrays.asList(
+                        String.valueOf(a.getId()), String.valueOf(a.getUserId()), String.valueOf(a.getJobId()), a.getStatus()
+                    ));
+                }
+                java.io.File file = new java.io.File(System.getProperty("user.home") + "/Desktop/ApplicationsReport.xlsx");
+                com.jobportal.util.ExportUtil.exportToExcel("Applications Report", headers, rows, file);
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> AlertUtil.showInfo("Export Successful", "Applications report saved as Excel to Desktop."));
+        task.setOnFailed(e -> AlertUtil.showError("Export Error", "Failed to export Applications Excel."));
+        new Thread(task).start();
     }
 
     @FXML

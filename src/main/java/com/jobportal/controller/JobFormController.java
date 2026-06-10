@@ -160,6 +160,25 @@ public class JobFormController {
             
             if (success) {
                 boolean wasUpdate = (currentEditJob != null);
+                
+                if (!wasUpdate) {
+                    final String jobTitle = job.getTitle();
+                    new Thread(() -> {
+                        try {
+                            com.jobportal.service.NotificationService notifService = new com.jobportal.service.NotificationService();
+                            com.jobportal.service.UserService uService = new com.jobportal.service.UserService();
+                            java.util.List<com.jobportal.model.User> usersList = uService.findAll();
+                            for (com.jobportal.model.User u : usersList) {
+                                if ("JOB_SEEKER".equals(u.getUserType())) {
+                                    notifService.createNotification(u.getId(), "💼 New job posted: '" + jobTitle + "'");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }).start();
+                }
+
                 AlertUtil.showInfo("Success", wasUpdate ? "Job updated successfully!" : "Job posted successfully!");
                 SessionManager.setCurrentJob(null);
                 if (SessionManager.isAdmin()) {

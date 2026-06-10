@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import com.jobportal.util.SessionManager;
+import com.jobportal.MainApp;
 
 import javafx.scene.control.MenuButton;
 
@@ -93,6 +94,6 @@ public class MainLayoutController {
 
     @FXML
     private void handleViewProfile() {
-        com.jobportal.util.AlertUtil.showInfo("Profile", "Profile view coming soon!");
+        MainApp.changeScene("profile.fxml", "My Profile");
     }
 }

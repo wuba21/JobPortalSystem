@@ -47,6 +47,7 @@ public class DashboardController {
         // Load employer ID if employer
         if (SessionManager.isEmployer()) {
             loadEmployerId();
+            checkApproachingDeadlines();
         }
 
         loadStats();
@@ -85,6 +86,41 @@ public class DashboardController {
             System.err.println("Load employer ID error: " + e.getMessage());
         }
     }
+
+    private void checkApproachingDeadlines() {
+        if (SessionManager.getEmployerId() <= 0) return;
+        
+        new Thread(() -> {
+            String sql = "SELECT id, title, deadline FROM jobs WHERE employer_id = ? AND is_active = TRUE AND deadline IS NOT NULL AND deadline BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 3 DAY)";
+            try (Connection conn = DBConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, SessionManager.getEmployerId());
+                ResultSet rs = stmt.executeQuery();
+                
+                com.jobportal.service.NotificationService notifService = new com.jobportal.service.NotificationService();
+                int userId = SessionManager.getCurrentUser().getId();
+                
+                while (rs.next()) {
+                    String title = rs.getString("title");
+                    String msg = "⚠️ Deadline approaching soon for your job: '" + title + "'";
+                    
+                    // Check if already notified to avoid spamming
+                    String checkSql = "SELECT COUNT(*) FROM notifications WHERE user_id = ? AND message = ?";
+                    try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                        checkStmt.setInt(1, userId);
+                        checkStmt.setString(2, msg);
+                        ResultSet crs = checkStmt.executeQuery();
+                        if (crs.next() && crs.getInt(1) == 0) {
+                            notifService.createNotification(userId, msg);
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Deadline check error: " + e.getMessage());
+            }
+        }).start();
+    }
+
 
     private void loadStats() {
         if (SessionManager.isAdmin()) {
@@ -125,6 +161,16 @@ public class DashboardController {
     @FXML
     private void handleViewApplications() {
         MainApp.changeScene("application-list.fxml", "Applications");
+    }
+
+    @FXML
+    private void handleSavedJobs() {
+        MainApp.changeScene("saved_jobs.fxml", "Saved Jobs");
+    }
+
+    @FXML
+    private void handleNotifications() {
+        MainApp.changeScene("notifications.fxml", "Notifications");
     }
 
     @FXML

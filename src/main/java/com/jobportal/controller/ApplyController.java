@@ -167,6 +167,27 @@ public class ApplyController {
                             "You have received a new application for the position of '" + currentJob.getTitle() + "' from " + currentUser.getFullName() + ".\n\nPlease log in to the dashboard to review it."
                         );
                     }
+
+                    // Create In-App Notification for Employer
+                    try {
+                        int employerUserId = -1;
+                        String selectSql = "SELECT user_id FROM employers WHERE id = ?";
+                        try (java.sql.Connection conn = com.jobportal.config.DBConnection.getConnection();
+                             java.sql.PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+                            stmt.setInt(1, currentJob.getEmployerId());
+                            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                                if (rs.next()) {
+                                    employerUserId = rs.getInt("user_id");
+                                }
+                            }
+                        }
+                        if (employerUserId != -1) {
+                            com.jobportal.service.NotificationService notifService = new com.jobportal.service.NotificationService();
+                            notifService.createNotification(employerUserId, "📩 New applicant applied: '" + currentUser.getFullName() + "' applied to '" + currentJob.getTitle() + "'");
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("Notify employer error: " + ex.getMessage());
+                    }
                 }
                 return applied;
             }

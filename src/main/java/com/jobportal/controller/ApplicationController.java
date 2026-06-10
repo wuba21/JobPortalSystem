@@ -121,8 +121,20 @@ public class ApplicationController {
                                             + ".\n\nThank you,\nJob Portal Team");
                         }
 
+                        // Create In-App Notification
+                        if (applicant != null) {
+                            com.jobportal.service.NotificationService notifService = new com.jobportal.service.NotificationService();
+                            if ("ACCEPTED".equals(newStatus)) {
+                                notifService.createNotification(applicant.getId(), "Your application for the position of '" + app.getJobTitle() + "' was accepted. 🎉");
+                            } else if ("REJECTED".equals(newStatus)) {
+                                notifService.createNotification(applicant.getId(), "Your application for the position of '" + app.getJobTitle() + "' was rejected. ❌");
+                            } else {
+                                notifService.createNotification(applicant.getId(), "Your application for the position of '" + app.getJobTitle() + "' is now: " + newStatus);
+                            }
+                        }
+
                         AlertUtil.showInfo("Success",
-                                "Status updated to " + newStatus + ".\n(Email notification sent to applicant)");
+                                "Status updated to " + newStatus + ".\n(Notification sent to applicant)");
                         loadApplications();
                     }
                 });
