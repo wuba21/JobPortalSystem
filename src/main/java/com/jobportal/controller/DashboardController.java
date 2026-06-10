@@ -169,11 +169,6 @@ public class DashboardController {
     }
 
     @FXML
-    private void handleViewApplications() {
-        MainApp.changeScene("application-list.fxml", "Applications");
-    }
-
-    @FXML
     private void handleLogout() {
         if (AlertUtil.showConfirmation("Logout", "Are you sure you want to logout?")) {
             SessionManager.logout();
