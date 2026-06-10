@@ -27,17 +27,13 @@
                 
                 <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleViewApplications" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand;" text=" My Applications" />
                 
-                <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleSavedJobs" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand;" text=" Saved Jobs" />
-                
-                <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleNotifications" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand;" text=" Notifications" />
-
                 <!-- Employer Actions Container -->
-                <VBox fx:id="employerActions" spacing="10">
+                <VBox fx:id="employerActions" spacing="10" visible="false" managed="false">
                     <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handlePostJob" style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: #69f0ae; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand; -fx-background-radius: 8;" text=" Post a New Job" />
                 </VBox>
                 
                 <!-- Admin Actions Container -->
-                <VBox fx:id="adminActions" spacing="10">
+                <VBox fx:id="adminActions" spacing="10" visible="false" managed="false">
                     <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleAdminDashboard" style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: #e879f9; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand; -fx-background-radius: 8;" text=" Admin Dashboard" />
                 </VBox>
                 

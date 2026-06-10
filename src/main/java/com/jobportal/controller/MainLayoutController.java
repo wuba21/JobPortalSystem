@@ -96,4 +96,14 @@ public class MainLayoutController {
     private void handleViewProfile() {
         MainApp.changeScene("profile.fxml", "My Profile");
     }
+
+    @FXML
+    private void handleSavedJobs() {
+        setCenterContent("saved_jobs.fxml");
+    }
+
+    @FXML
+    private void handleNotifications() {
+        setCenterContent("notifications.fxml");
+    }
 }

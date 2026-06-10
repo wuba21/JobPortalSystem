@@ -44,18 +44,11 @@ public class DashboardController {
         welcomeLabel.setText("Welcome, " + SessionManager.getCurrentUser().getFullName() + "!");
         userTypeLabel.setText("Role: " + SessionManager.getCurrentUser().getUserType().replace("_", " "));
 
-        // Load employer ID if employer
-        if (SessionManager.isEmployer()) {
-            loadEmployerId();
-            checkApproachingDeadlines();
-        }
-
-        loadStats();
-
-        // Show/hide role-specific actions
+        // IMMEDIATELY enforce visibility constraints to prevent accidental display if further code throws exceptions
         if (employerActions != null) {
-            employerActions.setVisible(SessionManager.isEmployer() || SessionManager.isAdmin());
-            employerActions.setManaged(SessionManager.isEmployer() || SessionManager.isAdmin());
+            boolean isEmployerOrAdmin = SessionManager.isEmployer() || SessionManager.isAdmin();
+            employerActions.setVisible(isEmployerOrAdmin);
+            employerActions.setManaged(isEmployerOrAdmin);
             
             if (btnManageJobs != null) {
                 btnManageJobs.setVisible(SessionManager.isEmployer());
@@ -66,6 +59,18 @@ public class DashboardController {
         if (adminActions != null) {
             adminActions.setVisible(SessionManager.isAdmin());
             adminActions.setManaged(SessionManager.isAdmin());
+        }
+
+        // Load employer ID if employer
+        if (SessionManager.isEmployer()) {
+            loadEmployerId();
+            checkApproachingDeadlines();
+        }
+
+        try {
+            loadStats();
+        } catch (Exception e) {
+            System.err.println("Error loading stats: " + e.getMessage());
         }
 
         if (SessionManager.getCurrentUser() != null && "JOB_SEEKER".equals(SessionManager.getCurrentUser().getUserType())) {
@@ -164,13 +169,8 @@ public class DashboardController {
     }
 
     @FXML
-    private void handleSavedJobs() {
-        MainApp.changeScene("saved_jobs.fxml", "Saved Jobs");
-    }
-
-    @FXML
-    private void handleNotifications() {
-        MainApp.changeScene("notifications.fxml", "Notifications");
+    private void handleViewApplications() {
+        MainApp.changeScene("application-list.fxml", "Applications");
     }
 
     @FXML
