@@ -47,11 +47,9 @@
                     <MenuButton fx:id="profileMenu" visible="false" managed="false" style="-fx-background-color: transparent; -fx-text-fill: #1e293b; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 14px; -fx-border-color: #cbd5e1; -fx-border-radius: 20; -fx-padding: 2 10;">
                         <items>
                             <MenuItem text="My Profile" onAction="#handleViewProfile" />
-                            <MenuItem fx:id="menuEmployerDashboard" text="💼 Employer Dashboard" onAction="#handleEmployerDashboard" visible="false" />
-                            <MenuItem fx:id="menuAdminDashboard" text="🛠 Admin Panel" onAction="#handleAdminDashboard" visible="false" />
-                            <MenuItem fx:id="menuCVBuilder" text="📋 CV Builder" onAction="#handleCVBuilder" />
-                            <MenuItem fx:id="menuSavedJobs" text="Saved Jobs" onAction="#handleSavedJobs" />
-                            <MenuItem fx:id="menuNotifications" text="Notifications" onAction="#handleNotifications" />
+                            <MenuItem text="📋 CV Builder" onAction="#handleCVBuilder" />
+                            <MenuItem text="Saved Jobs" onAction="#handleSavedJobs" />
+                            <MenuItem text="Notifications" onAction="#handleNotifications" />
                             <MenuItem text="Logout" onAction="#handleLogout" />
                         </items>
                     </MenuButton>
