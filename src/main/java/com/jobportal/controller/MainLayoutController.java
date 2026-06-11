@@ -106,4 +106,9 @@ public class MainLayoutController {
     private void handleNotifications() {
         setCenterContent("notifications.fxml");
     }
+
+    @FXML
+    private void handleCVBuilder() {
+        MainApp.changeScene("cv_builder.fxml", "CV Builder");
+    }
 }

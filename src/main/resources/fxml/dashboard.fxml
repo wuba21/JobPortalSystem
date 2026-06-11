@@ -26,6 +26,8 @@
                 <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleViewJobs" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand;" text=" Browse Jobs" />
                 
                 <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleViewApplications" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand;" text=" My Applications" />
+
+                <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleCVBuilder" style="-fx-background-color: rgba(255,255,255,0.08); -fx-text-fill: #a5f3fc; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand; -fx-background-radius: 8;" text=" CV Builder" />
                 
                 <!-- Employer Actions Container -->
                 <VBox fx:id="employerActions" spacing="10" visible="false" managed="false">

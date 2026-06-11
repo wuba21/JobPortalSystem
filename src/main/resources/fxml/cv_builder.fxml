@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<!--
+    cv_builder.fxml  –  Professional CV Builder
+    Controller : com.jobportal.controller.CVBuilderController
+-->
+<BorderPane style="-fx-background-color: #f0f4f8;"
+            stylesheets="@../css/style.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.jobportal.controller.CVBuilderController">
+
+    <!-- ══════════════════════ MENU BAR ══════════════════════ -->
+    <top>
+        <VBox>
+            <MenuBar style="-fx-background-color: #1e293b;">
+                <Menu text="File" style="-fx-text-fill:white;">
+                    <MenuItem text="💾  Save CV"        onAction="#menuSaveCV"/>
+                    <MenuItem text="📄  Generate PDF"   onAction="#menuGeneratePDF"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="🚪  Exit"           onAction="#menuExit"/>
+                </Menu>
+                <Menu text="Templates">
+                    <MenuItem text="Template 1 – Purple Header"     onAction="#menuTemplate1"/>
+                    <MenuItem text="Template 2 – Clean Modern"      onAction="#menuTemplate2"/>
+                    <MenuItem text="Template 3 – Cover Letter Style" onAction="#menuTemplate3"/>
+                    <MenuItem text="Template 4 – ATS Friendly"      onAction="#menuTemplate4"/>
+                </Menu>
+                <Menu text="Help">
+                    <MenuItem text="ℹ  About CV Builder" onAction="#menuAbout"/>
+                </Menu>
+            </MenuBar>
+
+            <!-- Page header -->
+            <HBox alignment="CENTER_LEFT" spacing="15"
+                  style="-fx-background-color: linear-gradient(to right,#4f46e5,#7c3aed);
+                         -fx-padding: 18 40;">
+                <Label text="📋 CV Builder"
+                       style="-fx-font-size:26px;-fx-font-weight:900;-fx-text-fill:white;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="statusLabel" visible="false"
+                       style="-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:white;"/>
+                <Button text="← Back to Dashboard" onAction="#handleBack"
+                        style="-fx-background-color:rgba(255,255,255,0.15);
+                               -fx-text-fill:white;-fx-font-weight:bold;
+                               -fx-background-radius:6;-fx-cursor:hand;-fx-padding:8 18;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- ══════════════════════ MAIN BODY ══════════════════════ -->
+    <center>
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background-color:transparent;-fx-background:transparent;">
+            <HBox spacing="20" style="-fx-padding:25 35;">
+
+                <!-- ─────────────── LEFT COLUMN (form) ─────────────── -->
+                <VBox spacing="20" HBox.hgrow="ALWAYS">
+
+                    <!-- PERSONAL INFORMATION -->
+                    <VBox spacing="12" style="-fx-background-color:white;-fx-padding:25;
+                                              -fx-background-radius:12;
+                                              -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),12,0,0,4);">
+                        <Label text="👤  Personal Information"
+                               style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#4f46e5;"/>
+                        <GridPane hgap="15" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Label text="Full Name *"             GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="fullNameField"      GridPane.columnIndex="0" GridPane.rowIndex="1" promptText="e.g. Abebe Kebede" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="Email *"                 GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="emailField"         GridPane.columnIndex="1" GridPane.rowIndex="1" promptText="email@example.com" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="Phone"                   GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="phoneField"         GridPane.columnIndex="0" GridPane.rowIndex="3" promptText="+251 9XX XXX XXX" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="Address"                 GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="addressField"       GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="City, Country" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="LinkedIn URL"            GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="linkedinField"      GridPane.columnIndex="0" GridPane.rowIndex="5" promptText="linkedin.com/in/your-profile" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="Gender"                  GridPane.columnIndex="1" GridPane.rowIndex="4" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <ComboBox fx:id="genderCombo"         GridPane.columnIndex="1" GridPane.rowIndex="5" maxWidth="1.7976931348623157E308" style="-fx-padding:5;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- EDUCATION -->
+                    <VBox spacing="12" style="-fx-background-color:white;-fx-padding:25;
+                                              -fx-background-radius:12;
+                                              -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),12,0,0,4);">
+                        <Label text="🎓  Education"
+                               style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#4f46e5;"/>
+                        <GridPane hgap="15" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Label text="University / College"  GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="universityField"  GridPane.columnIndex="0" GridPane.rowIndex="1" promptText="Addis Ababa University" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="Degree"                GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="degreeField"      GridPane.columnIndex="1" GridPane.rowIndex="1" promptText="B.Sc. / M.Sc. / MBA…" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="Department / Major"    GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="departmentField"  GridPane.columnIndex="0" GridPane.rowIndex="3" promptText="Computer Science" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="Graduation Year"       GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="gradYearField"    GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="2024" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- EXPERIENCE -->
+                    <VBox spacing="12" style="-fx-background-color:white;-fx-padding:25;
+                                              -fx-background-radius:12;
+                                              -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),12,0,0,4);">
+                        <Label text="💼  Work Experience"
+                               style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#4f46e5;"/>
+                        <GridPane hgap="15" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Label text="Company Name"          GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="companyField"     GridPane.columnIndex="0" GridPane.rowIndex="1" promptText="Ethio Telecom" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="Position / Title"      GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="positionField"    GridPane.columnIndex="1" GridPane.rowIndex="1" promptText="Software Engineer" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="Start Date"            GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="startDateField"   GridPane.columnIndex="0" GridPane.rowIndex="3" promptText="Jan 2022" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+
+                            <Label text="End Date"              GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="endDateField"     GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Present" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                        </GridPane>
+                        <Label text="Description" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                        <TextArea fx:id="expDescArea" prefRowCount="3"
+                                  promptText="Briefly describe your role, achievements, and responsibilities…"
+                                  style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                    </VBox>
+
+                    <!-- SKILLS -->
+                    <VBox spacing="12" style="-fx-background-color:white;-fx-padding:25;
+                                              -fx-background-radius:12;
+                                              -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),12,0,0,4);">
+                        <Label text="🛠  Skills"
+                               style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#4f46e5;"/>
+                        <GridPane hgap="15" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+                            <TextField fx:id="skill1Field" GridPane.columnIndex="0" GridPane.rowIndex="0" promptText="e.g. Java"         style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                            <TextField fx:id="skill2Field" GridPane.columnIndex="1" GridPane.rowIndex="0" promptText="e.g. Python"       style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                            <TextField fx:id="skill3Field" GridPane.columnIndex="2" GridPane.rowIndex="0" promptText="e.g. MySQL"        style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                            <TextField fx:id="skill4Field" GridPane.columnIndex="0" GridPane.rowIndex="1" promptText="e.g. JavaFX"       style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                            <TextField fx:id="skill5Field" GridPane.columnIndex="1" GridPane.rowIndex="1" promptText="e.g. Leadership"   style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- ACTIVITIES -->
+                    <VBox spacing="12" style="-fx-background-color:white;-fx-padding:25;
+                                              -fx-background-radius:12;
+                                              -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),12,0,0,4);">
+                        <Label text="🏅  Activities &amp; Organizations"
+                               style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#4f46e5;"/>
+                        <GridPane hgap="15" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+                            <Label text="Organization Name"      GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="orgNameField"      GridPane.columnIndex="0" GridPane.rowIndex="1" promptText="IEEE Student Branch" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                            <Label text="Your Position"          GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                            <TextField fx:id="orgPositionField"  GridPane.columnIndex="1" GridPane.rowIndex="1" promptText="Treasurer" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                        </GridPane>
+                        <Label text="Description" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
+                        <TextArea fx:id="activityDescArea" prefRowCount="3"
+                                  promptText="Describe your involvement and contributions…"
+                                  style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                    </VBox>
+
+                    <!-- CAREER OBJECTIVE -->
+                    <VBox spacing="10" style="-fx-background-color:white;-fx-padding:25;
+                                              -fx-background-radius:12;
+                                              -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),12,0,0,4);">
+                        <Label text="🎯  Career Objective"
+                               style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#4f46e5;"/>
+                        <TextArea fx:id="objectiveArea" prefRowCount="4"
+                                  promptText="Motivated Software Engineer with 2+ years of experience seeking to leverage skills in…"
+                                  style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                    </VBox>
+
+                    <!-- ACTION BUTTONS ROW -->
+                    <HBox spacing="12">
+                        <Button text="💾 Save CV"          onAction="#handleSaveCV"
+                                style="-fx-background-color:#4f46e5;-fx-text-fill:white;
+                                       -fx-font-weight:bold;-fx-padding:12 22;-fx-background-radius:8;-fx-cursor:hand;"
+                                HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <Button text="👁 Preview CV"       onAction="#handlePreviewCV"
+                                style="-fx-background-color:#0ea5e9;-fx-text-fill:white;
+                                       -fx-font-weight:bold;-fx-padding:12 22;-fx-background-radius:8;-fx-cursor:hand;"
+                                HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <Button text="📄 Generate PDF"     onAction="#handleGeneratePDF"
+                                style="-fx-background-color:#10b981;-fx-text-fill:white;
+                                       -fx-font-weight:bold;-fx-padding:12 22;-fx-background-radius:8;-fx-cursor:hand;"
+                                HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <Button text="🚀 Apply Using CV"   onAction="#handleApplyUsingCV"
+                                style="-fx-background-color:#f59e0b;-fx-text-fill:white;
+                                       -fx-font-weight:bold;-fx-padding:12 22;-fx-background-radius:8;-fx-cursor:hand;"
+                                HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ─────────────── RIGHT COLUMN (photo + template) ─────────────── -->
+                <VBox spacing="20" prefWidth="270">
+
+                    <!-- Profile Photo Upload -->
+                    <VBox spacing="12" alignment="CENTER"
+                          style="-fx-background-color:white;-fx-padding:25;-fx-background-radius:12;
+                                 -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),12,0,0,4);">
+                        <Label text="📸  Profile Photo"
+                               style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#4f46e5;"/>
+                        <ImageView fx:id="photoPreview"
+                                   fitWidth="160" fitHeight="160" preserveRatio="true"
+                                   style="-fx-border-color:#e2e8f0;-fx-border-radius:80;
+                                          -fx-background-radius:80;"/>
+                        <Button text="📁 Upload Photo" onAction="#handleUploadPhoto"
+                                maxWidth="1.7976931348623157E308"
+                                style="-fx-background-color:#4f46e5;-fx-text-fill:white;
+                                       -fx-font-weight:bold;-fx-padding:10 16;
+                                       -fx-background-radius:8;-fx-cursor:hand;"/>
+                        <Label text="PNG / JPG / JPEG accepted"
+                               style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                    </VBox>
+
+                    <!-- Template Selection -->
+                    <VBox spacing="12"
+                          style="-fx-background-color:white;-fx-padding:25;-fx-background-radius:12;
+                                 -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),12,0,0,4);">
+                        <Label text="🖌  Select Template"
+                               style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#4f46e5;"/>
+                        <ComboBox fx:id="templateCombo" maxWidth="1.7976931348623157E308"
+                                  style="-fx-padding:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                        <!-- Template preview image -->
+                        <ImageView fx:id="templatePreview"
+                                   fitWidth="230" fitHeight="300" preserveRatio="true"
+                                   style="-fx-border-color:#e2e8f0;-fx-border-radius:8;"/>
+                        <Label text="Template preview above"
+                               style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                    </VBox>
+                </VBox>
+
+            </HBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

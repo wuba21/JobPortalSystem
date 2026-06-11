@@ -88,6 +88,32 @@ public class DBConnection {
                       "UNIQUE KEY unique_saved_job (user_id, job_id)" +
                       ")");
         } catch (Exception ignored) {}
+        // applicant_cv table for CV Builder
+        try (java.sql.Statement s = connection.createStatement()) {
+            s.execute("CREATE TABLE IF NOT EXISTS applicant_cv (" +
+                      "id INT AUTO_INCREMENT PRIMARY KEY," +
+                      "user_id INT NOT NULL," +
+                      "fullname VARCHAR(255)," +
+                      "email VARCHAR(255)," +
+                      "phone VARCHAR(50)," +
+                      "address TEXT," +
+                      "linkedin VARCHAR(255)," +
+                      "gender VARCHAR(20)," +
+                      "university_name VARCHAR(255)," +
+                      "degree VARCHAR(255)," +
+                      "department VARCHAR(255)," +
+                      "graduation_year VARCHAR(10)," +
+                      "experience TEXT," +
+                      "skills TEXT," +
+                      "activities TEXT," +
+                      "objective TEXT," +
+                      "photo_path VARCHAR(512)," +
+                      "cv_template INT DEFAULT 1," +
+                      "pdf_path VARCHAR(512)," +
+                      "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                      "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE" +
+                      ")");
+        } catch (Exception ignored) {}
     }
 
 

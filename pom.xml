@@ -63,6 +63,13 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.3</version>
         </dependency>
+
+        <!-- PDF Generation (Apache PDFBox) for CV Builder -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.1</version>
+        </dependency>
     </dependencies>
 
 

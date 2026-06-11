@@ -169,6 +169,11 @@ public class DashboardController {
     }
 
     @FXML
+    private void handleCVBuilder() {
+        MainApp.changeScene("cv_builder.fxml", "CV Builder");
+    }
+
+    @FXML
     private void handleLogout() {
         if (AlertUtil.showConfirmation("Logout", "Are you sure you want to logout?")) {
             SessionManager.logout();
