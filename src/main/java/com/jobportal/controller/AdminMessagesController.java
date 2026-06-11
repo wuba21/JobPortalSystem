@@ -166,6 +166,6 @@ public class AdminMessagesController {
 
     @FXML
     private void handleBack() {
-        MainApp.changeScene("dashboard.fxml", "Dashboard");
+        MainApp.changeScene("admin_dashboard.fxml", "Admin Dashboard");
     }
 }
