@@ -12,6 +12,12 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Priority;
 
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -284,19 +290,105 @@ public class CVBuilderController {
     // ── Preview CV ────────────────────────────────────────────────────────────
     @FXML
     private void handlePreviewCV() {
-        // Show a simple dialog preview
         CV cv = buildCVFromForm();
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("CV Preview — " + cv.getFullName());
-        alert.setHeaderText(cv.getFullName() + " | " + cv.getEmail() + " | " + cv.getPhone());
-        alert.setContentText(
-            "🎓 Education:\n  " + cv.getDegree() + " @ " + cv.getUniversityName() + " (" + cv.getGraduationYear() + ")" +
-            "\n\n💼 Experience:\n  " + cv.getExperience().replace("|", " – ") +
-            "\n\n🛠 Skills:\n  " + cv.getSkills().replace(",", "  •  ") +
-            "\n\n🎯 Objective:\n  " + cv.getObjective()
+        
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("CV Preview — " + cv.getFullName());
+        dialog.setHeaderText(null);
+        
+        ButtonType closeButtonType = new ButtonType("Close", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(closeButtonType);
+        
+        VBox container = new VBox(15);
+        container.setPadding(new Insets(20));
+        container.setPrefWidth(550);
+        container.setStyle("-fx-background-color: #f8fafc;");
+        
+        HBox headerBox = new HBox(20);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+        headerBox.setPadding(new Insets(15));
+        headerBox.setStyle("-fx-background-color: #1e293b; -fx-background-radius: 8;");
+        
+        if (selectedPhotoPath != null) {
+            File file = new File(selectedPhotoPath);
+            if (file.exists()) {
+                try {
+                    ImageView imgView = new ImageView(new Image(file.toURI().toString()));
+                    imgView.setFitWidth(90);
+                    imgView.setFitHeight(90);
+                    imgView.setPreserveRatio(true);
+                    
+                    StackPane imgHolder = new StackPane(imgView);
+                    imgHolder.setStyle("-fx-border-color: white; -fx-border-width: 2; -fx-border-radius: 45; -fx-background-radius: 45; -fx-overflow: hidden;");
+                    imgHolder.setPrefSize(90, 90);
+                    headerBox.getChildren().add(imgHolder);
+                } catch (Exception ignored) {}
+            }
+        }
+        
+        VBox headerText = new VBox(5);
+        Label nameLbl = new Label(safe(cv.getFullName()));
+        nameLbl.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
+        
+        Label contactLbl = new Label(
+            (cv.getEmail().isEmpty() ? "" : "📧 " + cv.getEmail()) +
+            (cv.getPhone().isEmpty() ? "" : "  |  📞 " + cv.getPhone()) +
+            (cv.getAddress().isEmpty() ? "" : "  |  📍 " + cv.getAddress())
         );
-        alert.getDialogPane().setPrefWidth(600);
-        alert.showAndWait();
+        contactLbl.setStyle("-fx-text-fill: #cbd5e1; -fx-font-size: 12px;");
+        
+        Label subLbl = new Label(
+            (cv.getLinkedin().isEmpty() ? "" : "🔗 LinkedIn: " + cv.getLinkedin()) +
+            (cv.getGender() == null || cv.getGender().isEmpty() ? "" : "  |  👤 Gender: " + cv.getGender())
+        );
+        subLbl.setStyle("-fx-text-fill: #cbd5e1; -fx-font-size: 11px;");
+        
+        headerText.getChildren().addAll(nameLbl, contactLbl, subLbl);
+        headerBox.getChildren().add(headerText);
+        HBox.setHgrow(headerText, Priority.ALWAYS);
+        
+        container.getChildren().add(headerBox);
+        
+        VBox detailsBox = new VBox(15);
+        detailsBox.setStyle("-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);");
+        
+        addPreviewSection(detailsBox, "🎯 CAREER OBJECTIVE", cv.getObjective());
+        
+        String eduText = "";
+        if (!cv.getUniversityName().isEmpty()) {
+            eduText = "🎓 " + safe(cv.getDegree()) + " in " + safe(cv.getDepartment()) + "\n🏫 " + safe(cv.getUniversityName()) + " (" + safe(cv.getGraduationYear()) + ")";
+        }
+        addPreviewSection(detailsBox, "🎓 EDUCATION", eduText);
+        
+        String expText = "";
+        String[] exp = cv.getExperience() != null ? cv.getExperience().split("\\|", -1) : new String[5];
+        if (!get(exp, 0).isEmpty() || !get(exp, 1).isEmpty()) {
+            expText = "💼 " + safe(get(exp, 1)) + " at " + safe(get(exp, 0)) + " (" + safe(get(exp, 2)) + " - " + safe(get(exp, 3)) + ")\n📝 " + safe(get(exp, 4));
+        }
+        addPreviewSection(detailsBox, "💼 EXPERIENCE", expText);
+        
+        String skillsText = cv.getSkills() != null ? cv.getSkills().replace(",", "   •   ").replace(",,", "").trim() : "";
+        addPreviewSection(detailsBox, "🛠 SKILLS", skillsText);
+        
+        String actText = "";
+        String[] act = cv.getActivities() != null ? cv.getActivities().split("\\|", -1) : new String[3];
+        if (!get(act, 0).isEmpty()) {
+            actText = "🏅 " + safe(get(act, 1)) + " at " + safe(get(act, 0)) + "\n📝 " + safe(get(act, 2));
+        }
+        addPreviewSection(detailsBox, "🏅 ACTIVITIES & ORGANIZATIONS", actText);
+        
+        ScrollPane scrollPane = new ScrollPane(detailsBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(400);
+        scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+        
+        container.getChildren().add(scrollPane);
+        
+        dialog.getDialogPane().setContent(container);
+        dialog.getDialogPane().setPrefWidth(580);
+        dialog.getDialogPane().setPrefHeight(600);
+        
+        dialog.showAndWait();
     }
 
     // ── Generate PDF ──────────────────────────────────────────────────────────
@@ -341,6 +433,7 @@ public class CVBuilderController {
             }
             showStatus("✅ PDF saved to: " + file.getName(), "green");
             AlertUtil.showInfo("PDF Generated", "Your CV has been saved successfully to:\n" + path);
+            clearForm(); // Clear CV form fields after generation
         });
         task.setOnFailed(e -> {
             task.getException().printStackTrace();
@@ -748,5 +841,62 @@ public class CVBuilderController {
         statusLabel.setText(msg);
         statusLabel.setStyle("-fx-text-fill: " + color + "; -fx-font-weight: bold;");
         statusLabel.setVisible(true);
+    }
+
+    private void clearForm() {
+        fullNameField.clear();
+        emailField.clear();
+        phoneField.clear();
+        addressField.clear();
+        linkedinField.clear();
+        genderCombo.setValue(null);
+
+        universityField.clear();
+        degreeField.clear();
+        departmentField.clear();
+        gradYearField.clear();
+
+        companyField.clear();
+        positionField.clear();
+        startDateField.clear();
+        endDateField.clear();
+        expDescArea.clear();
+
+        skill1Field.clear();
+        skill2Field.clear();
+        skill3Field.clear();
+        skill4Field.clear();
+        skill5Field.clear();
+
+        orgNameField.clear();
+        orgPositionField.clear();
+        activityDescArea.clear();
+
+        objectiveArea.clear();
+
+        selectedPhotoPath = null;
+        photoPreview.setImage(null);
+        templateCombo.getSelectionModel().selectFirst();
+        updateTemplatePreview();
+
+        currentCVId = -1;
+    }
+
+    private void addPreviewSection(VBox container, String title, String content) {
+        if (content == null || content.trim().isEmpty()) return;
+        
+        VBox sectionBox = new VBox(5);
+        sectionBox.setPadding(new Insets(0, 0, 10, 0));
+        
+        Label titleLbl = new Label(title);
+        titleLbl.setStyle("-fx-text-fill: #4f46e5; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0; -fx-padding: 0 0 3 0;");
+        titleLbl.setMaxWidth(Double.MAX_VALUE);
+        
+        Label contentLbl = new Label(content);
+        contentLbl.setWrapText(true);
+        contentLbl.setStyle("-fx-text-fill: #334155; -fx-font-size: 12px; -fx-line-spacing: 3;");
+        
+        sectionBox.getChildren().addAll(titleLbl, contentLbl);
+        container.getChildren().add(sectionBox);
     }
 }
