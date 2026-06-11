@@ -77,7 +77,6 @@ public class AdminDashboardController {
     private void showMessages() {
         MainApp.changeScene("admin_messages.fxml", "Admin Messages");
     }
-
     @FXML
     private void showManageJobs() {
         if (reportsView != null) {
