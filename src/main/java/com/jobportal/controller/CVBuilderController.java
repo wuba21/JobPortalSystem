@@ -643,7 +643,13 @@ public class CVBuilderController {
     // ── Back ──────────────────────────────────────────────────────────────────
     @FXML
     private void handleBack() {
-        MainApp.changeScene("dashboard.fxml", "Dashboard");
+        if (SessionManager.isEmployer()) {
+            MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
+        } else if (SessionManager.isAdmin()) {
+            MainApp.changeScene("admin_dashboard.fxml", "Admin Panel");
+        } else {
+            MainApp.changeScene("dashboard.fxml", "Dashboard");
+        }
     }
 
     // ── Menu Handlers ─────────────────────────────────────────────────────────

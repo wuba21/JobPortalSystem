@@ -16,6 +16,12 @@ public class MainLayoutController {
     @FXML private MenuButton profileMenu;
     @FXML private Button btnSignIn;
 
+    @FXML private javafx.scene.control.MenuItem menuEmployerDashboard;
+    @FXML private javafx.scene.control.MenuItem menuAdminDashboard;
+    @FXML private javafx.scene.control.MenuItem menuCVBuilder;
+    @FXML private javafx.scene.control.MenuItem menuSavedJobs;
+    @FXML private javafx.scene.control.MenuItem menuNotifications;
+
     @FXML
     public void initialize() {
         updateAuthButtons();
@@ -30,6 +36,16 @@ public class MainLayoutController {
                 profileMenu.setVisible(true);
                 profileMenu.setManaged(true);
             }
+            
+            boolean isEmployer = SessionManager.isEmployer();
+            boolean isAdmin = SessionManager.isAdmin();
+            boolean isJobSeeker = SessionManager.isJobSeeker();
+            
+            if (menuEmployerDashboard != null) menuEmployerDashboard.setVisible(isEmployer);
+            if (menuAdminDashboard != null) menuAdminDashboard.setVisible(isAdmin);
+            if (menuCVBuilder != null) menuCVBuilder.setVisible(isJobSeeker);
+            if (menuSavedJobs != null) menuSavedJobs.setVisible(isJobSeeker);
+            if (menuNotifications != null) menuNotifications.setVisible(isJobSeeker);
         } else {
             btnSignIn.setVisible(true);
             btnSignIn.setManaged(true);
@@ -110,5 +126,15 @@ public class MainLayoutController {
     @FXML
     private void handleCVBuilder() {
         MainApp.changeScene("cv_builder.fxml", "CV Builder");
+    }
+
+    @FXML
+    private void handleEmployerDashboard() {
+        MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
+    }
+
+    @FXML
+    private void handleAdminDashboard() {
+        MainApp.changeScene("admin_dashboard.fxml", "Admin Dashboard");
     }
 }
