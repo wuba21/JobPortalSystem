@@ -311,7 +311,11 @@ public class JobController {
     private void handleBackToDashboard() {
         SessionManager.setViewingCompany(null, null);
         if (SessionManager.getCurrentUser() != null) {
-            MainApp.changeScene("dashboard.fxml", "Dashboard Overview");
+            if (SessionManager.isEmployer()) {
+                MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
+            } else {
+                MainApp.changeScene("dashboard.fxml", "Dashboard Overview");
+            }
         } else {
             MainApp.changeScene("Home.fxml", "Home");
         }

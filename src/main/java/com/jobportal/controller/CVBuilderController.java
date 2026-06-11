@@ -307,12 +307,25 @@ public class CVBuilderController {
             AlertUtil.showError("Validation", "Please enter your Full Name before generating a PDF.");
             return;
         }
+
+        // Prompt user for save path using FileChooser
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Save CV PDF");
+        fc.setInitialFileName("CV_" + cv.getFullName().replace(" ", "_") + ".pdf");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        
+        File file = fc.showSaveDialog(MainApp.getPrimaryStage());
+        if (file == null) {
+            return; // User cancelled the dialog
+        }
+
+        String destPath = file.getAbsolutePath();
         showStatus("⏳ Generating PDF...", "#f59e0b");
 
         Task<String> task = new Task<>() {
             @Override
             protected String call() throws Exception {
-                return generatePDF(cv);
+                return generatePDF(cv, destPath);
             }
         };
         task.setOnSucceeded(e -> {
@@ -326,12 +339,13 @@ public class CVBuilderController {
                 cv.setId(currentCVId);
                 cvDAO.update(cv);
             }
-            showStatus("✅ PDF saved to Desktop: CV_" + cv.getFullName().replace(" ", "_") + ".pdf", "green");
-            AlertUtil.showInfo("PDF Generated", "Your CV has been saved to:\n" + path);
+            showStatus("✅ PDF saved to: " + file.getName(), "green");
+            AlertUtil.showInfo("PDF Generated", "Your CV has been saved successfully to:\n" + path);
         });
         task.setOnFailed(e -> {
             task.getException().printStackTrace();
             showStatus("❌ PDF generation failed.", "red");
+            AlertUtil.showError("Error", "Failed to generate PDF: " + task.getException().getMessage());
         });
         new Thread(task).start();
     }
@@ -340,17 +354,13 @@ public class CVBuilderController {
      * Generates the PDF using Apache PDFBox, styled according to the selected template.
      * Returns the absolute path of the saved file.
      */
-    private String generatePDF(CV cv) throws IOException {
-        String fileName = "CV_" + cv.getFullName().replace(" ", "_") + ".pdf";
-        String destPath = System.getProperty("user.home") + "/Desktop/" + fileName;
-
+    private String generatePDF(CV cv, String destPath) throws IOException {
         try (PDDocument doc = new PDDocument()) {
             PDPage page = new PDPage(PDRectangle.A4);
             doc.addPage(page);
 
             float pageW = page.getMediaBox().getWidth();   // 595
             float pageH = page.getMediaBox().getHeight();  // 842
-            float margin = 45f;
 
             // Fonts
             PDFont bold   = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
@@ -360,69 +370,159 @@ public class CVBuilderController {
             int template = cv.getCvTemplate();
 
             try (PDPageContentStream cs = new PDPageContentStream(doc, page)) {
+                if (template == 1) {
+                    // ── TEMPLATE 1: PURPLE HEADER & TWO COLUMN ──────────────────
+                    // Purple Banner
+                    cs.setNonStrokingColor(0.38f, 0.15f, 0.62f); // Purple
+                    cs.addRect(0, pageH - 120f, pageW, 120f);
+                    cs.fill();
 
-                // ── Header background colour per template ──────────────────────
-                float headerH = 130f;
-                float[] rgb   = headerColor(template);
-                cs.setNonStrokingColor(rgb[0], rgb[1], rgb[2]);
-                cs.addRect(0, pageH - headerH, pageW, headerH);
-                cs.fill();
+                    // Sidebar Background (right-hand column)
+                    cs.setNonStrokingColor(0.96f, 0.94f, 0.98f); // Soft Purple/Gray
+                    cs.addRect(390f, 0f, 205f, pageH - 120f);
+                    cs.fill();
 
-                // ── Profile photo (top-right corner of header) ────────────────
-                if (cv.getPhotoPath() != null) {
-                    File imgFile = new File(cv.getPhotoPath());
-                    if (imgFile.exists()) {
-                        PDImageXObject img = PDImageXObject.createFromFile(cv.getPhotoPath(), doc);
-                        float imgSize = 85f;
-                        cs.drawImage(img, pageW - margin - imgSize, pageH - headerH + 22f, imgSize, imgSize);
+                    // Profile Photo in Banner (circular-like placement)
+                    if (cv.getPhotoPath() != null) {
+                        File imgFile = new File(cv.getPhotoPath());
+                        if (imgFile.exists()) {
+                            PDImageXObject img = PDImageXObject.createFromFile(cv.getPhotoPath(), doc);
+                            cs.drawImage(img, pageW - 125f, pageH - 100f, 80f, 80f);
+                        }
                     }
+
+                    // Header Info
+                    cs.setNonStrokingColor(1f, 1f, 1f); // White
+                    drawText(cs, bold, 24, 45f, pageH - 50f, safe(cv.getFullName()));
+                    drawText(cs, regular, 11, 45f, pageH - 80f, "Curriculum Vitae");
+
+                    float yLeft = pageH - 120f - 30f;
+                    float yRight = pageH - 120f - 30f;
+                    float[] titleColor = new float[]{0.38f, 0.15f, 0.62f};
+
+                    // Left Column (width = 320)
+                    yLeft = drawColumnSection(cs, bold, regular, "CAREER OBJECTIVE", cv.getObjective(), 35f, yLeft, 320f, titleColor);
+                    yLeft = drawColumnSection(cs, bold, regular, "EDUCATION", getEducationText(cv), 35f, yLeft, 320f, titleColor);
+                    yLeft = drawColumnSection(cs, bold, regular, "EXPERIENCE", getExperienceText(cv), 35f, yLeft, 320f, titleColor);
+                    yLeft = drawColumnSection(cs, bold, regular, "ACTIVITIES & ORGANIZATIONS", getActivitiesText(cv), 35f, yLeft, 320f, titleColor);
+
+                    // Right Column (width = 160)
+                    yRight = drawColumnSection(cs, bold, regular, "CONTACT", getContactText(cv), 405f, yRight, 160f, titleColor);
+                    yRight = drawColumnSection(cs, bold, regular, "SKILLS", getSkillsText(cv), 405f, yRight, 160f, titleColor);
+
+                } else if (template == 2) {
+                    // ── TEMPLATE 2: CLEAN MODERN WITH SIDEBAR ──────────────────
+                    // Sidebar background (left)
+                    cs.setNonStrokingColor(0.09f, 0.13f, 0.22f); // Dark Slate Blue
+                    cs.addRect(0f, 0f, 180f, pageH);
+                    cs.fill();
+
+                    // Profile Photo in Sidebar
+                    if (cv.getPhotoPath() != null) {
+                        File imgFile = new File(cv.getPhotoPath());
+                        if (imgFile.exists()) {
+                            PDImageXObject img = PDImageXObject.createFromFile(cv.getPhotoPath(), doc);
+                            cs.drawImage(img, 45f, pageH - 135f, 90f, 90f);
+                        }
+                    }
+
+                    // Sidebar Content (Contact, Skills)
+                    float ySidebar = pageH - 160f;
+                    ySidebar = drawSidebarSection(cs, bold, regular, "CONTACT", getContactText(cv), 20f, ySidebar, 140f);
+                    ySidebar = drawSidebarSection(cs, bold, regular, "SKILLS", getSkillsText(cv), 20f, ySidebar, 140f);
+
+                    // Main Content (Name, Title, Objective, Education, Experience, Activities)
+                    float yMain = pageH - 60f;
+                    cs.setNonStrokingColor(0.09f, 0.13f, 0.22f);
+                    drawText(cs, bold, 28, 205f, yMain, safe(cv.getFullName()));
+                    yMain -= 25f;
+                    cs.setNonStrokingColor(0.4f, 0.4f, 0.4f);
+                    drawText(cs, italic, 11, 205f, yMain, "Professional Resume");
+                    yMain -= 35f;
+
+                    float[] titleColor = new float[]{0.09f, 0.13f, 0.22f};
+                    yMain = drawColumnSection(cs, bold, regular, "CAREER OBJECTIVE", cv.getObjective(), 205f, yMain, 345f, titleColor);
+                    yMain = drawColumnSection(cs, bold, regular, "EDUCATION", getEducationText(cv), 205f, yMain, 345f, titleColor);
+                    yMain = drawColumnSection(cs, bold, regular, "EXPERIENCE", getExperienceText(cv), 205f, yMain, 345f, titleColor);
+                    yMain = drawColumnSection(cs, bold, regular, "ACTIVITIES", getActivitiesText(cv), 205f, yMain, 345f, titleColor);
+
+                } else if (template == 3) {
+                    // ── TEMPLATE 3: COVER LETTER STYLE (ELEGANT FORMAL) ────────
+                    float y = pageH - 50f;
+                    cs.setNonStrokingColor(0.13f, 0.55f, 0.44f); // Teal Accent
+                    
+                    // Profile Photo (Top Right)
+                    if (cv.getPhotoPath() != null) {
+                        File imgFile = new File(cv.getPhotoPath());
+                        if (imgFile.exists()) {
+                            PDImageXObject img = PDImageXObject.createFromFile(cv.getPhotoPath(), doc);
+                            cs.drawImage(img, pageW - 110f, pageH - 100f, 65f, 65f);
+                        }
+                    }
+
+                    drawText(cs, bold, 26, 50f, y, safe(cv.getFullName()));
+                    y -= 22f;
+                    
+                    cs.setNonStrokingColor(0.3f, 0.3f, 0.3f);
+                    String contactLine = safe(cv.getEmail()) + "  |  " + safe(cv.getPhone()) + "  |  " + safe(cv.getAddress());
+                    drawText(cs, regular, 9.5f, 50f, y, contactLine);
+                    y -= 15f;
+                    
+                    if (cv.getLinkedin() != null && !cv.getLinkedin().isEmpty()) {
+                        drawText(cs, italic, 9f, 50f, y, "LinkedIn: " + cv.getLinkedin());
+                        y -= 15f;
+                    }
+
+                    // Divider Line
+                    cs.setStrokingColor(0.13f, 0.55f, 0.44f);
+                    cs.setLineWidth(1.5f);
+                    cs.moveTo(50f, y - 5f);
+                    cs.lineTo(pageW - 50f, y - 5f);
+                    cs.stroke();
+                    y -= 25f;
+
+                    float[] titleColor = new float[]{0.13f, 0.55f, 0.44f};
+                    y = drawColumnSection(cs, bold, regular, "CAREER OBJECTIVE", cv.getObjective(), 50f, y, 495f, titleColor);
+                    y = drawColumnSection(cs, bold, regular, "EDUCATION", getEducationText(cv), 50f, y, 495f, titleColor);
+                    y = drawColumnSection(cs, bold, regular, "EXPERIENCE", getExperienceText(cv), 50f, y, 495f, titleColor);
+                    y = drawColumnSection(cs, bold, regular, "SKILLS", getSkillsText(cv), 50f, y, 495f, titleColor);
+                    y = drawColumnSection(cs, bold, regular, "ACTIVITIES & ORGANIZATIONS", getActivitiesText(cv), 50f, y, 495f, titleColor);
+
+                } else {
+                    // ── TEMPLATE 4: ATS FRIENDLY ─────────────────────────────────
+                    float y = pageH - 50f;
+                    cs.setNonStrokingColor(0f, 0f, 0f); // Plain Black
+                    
+                    drawText(cs, bold, 22, 50f, y, safe(cv.getFullName()));
+                    y -= 20f;
+                    
+                    String contactInfo = safe(cv.getEmail()) + "  |  " + safe(cv.getPhone()) + "  |  " + safe(cv.getAddress());
+                    drawText(cs, regular, 9.5f, 50f, y, contactInfo);
+                    y -= 14f;
+                    if (cv.getLinkedin() != null && !cv.getLinkedin().isEmpty()) {
+                        drawText(cs, regular, 9f, 50f, y, "LinkedIn: " + cv.getLinkedin());
+                        y -= 14f;
+                    }
+                    
+                    // Divider Line
+                    cs.setStrokingColor(0f, 0f, 0f);
+                    cs.setLineWidth(1f);
+                    cs.moveTo(50f, y - 4f);
+                    cs.lineTo(pageW - 50f, y - 4f);
+                    cs.stroke();
+                    y -= 20f;
+
+                    float[] titleColor = new float[]{0f, 0f, 0f};
+                    y = drawColumnSection(cs, bold, regular, "CAREER OBJECTIVE", cv.getObjective(), 50f, y, 495f, titleColor);
+                    y = drawColumnSection(cs, bold, regular, "EXPERIENCE", getExperienceText(cv), 50f, y, 495f, titleColor);
+                    y = drawColumnSection(cs, bold, regular, "EDUCATION", getEducationText(cv), 50f, y, 495f, titleColor);
+                    y = drawColumnSection(cs, bold, regular, "SKILLS", getSkillsText(cv), 50f, y, 495f, titleColor);
+                    y = drawColumnSection(cs, bold, regular, "ACTIVITIES", getActivitiesText(cv), 50f, y, 495f, titleColor);
                 }
 
-                // ── Name & contact in header ───────────────────────────────────
-                cs.setNonStrokingColor(1f, 1f, 1f);
-                drawText(cs, bold,    22, margin, pageH - 50f,  safe(cv.getFullName()));
-                drawText(cs, regular, 10, margin, pageH - 72f,
-                    safe(cv.getEmail()) + "  |  " + safe(cv.getPhone()) + "  |  " + safe(cv.getAddress()));
-                drawText(cs, italic,  9,  margin, pageH - 88f,
-                    (cv.getLinkedin() != null && !cv.getLinkedin().isEmpty() ? "LinkedIn: " + cv.getLinkedin() : "") +
-                    (cv.getGender() != null ? "   Gender: " + cv.getGender() : ""));
-
-                // ── Template label badge ───────────────────────────────────────
-                drawText(cs, bold, 8, pageW - 150f, pageH - 118f, "Template " + template);
-
-                // Body — black text from here on
-                cs.setNonStrokingColor(0.1f, 0.1f, 0.1f);
-
-                float y = pageH - headerH - 28f;
-
-                // ── Career Objective ─────────────────────────────────────────
-                y = drawSection(cs, bold, regular, "CAREER OBJECTIVE", cv.getObjective(), margin, y, pageW - margin*2);
-
-                // ── Education ────────────────────────────────────────────────
-                String edu = safe(cv.getDegree()) + " in " + safe(cv.getDepartment()) +
-                             "\n" + safe(cv.getUniversityName()) + " | Graduated: " + safe(cv.getGraduationYear());
-                y = drawSection(cs, bold, regular, "EDUCATION", edu, margin, y, pageW - margin*2);
-
-                // ── Experience ────────────────────────────────────────────────
-                String[] exp = cv.getExperience() != null ? cv.getExperience().split("\\|", -1) : new String[5];
-                String expText = safe(get(exp,1)) + " at " + safe(get(exp,0)) +
-                                 " (" + safe(get(exp,2)) + " – " + safe(get(exp,3)) + ")\n" + safe(get(exp,4));
-                y = drawSection(cs, bold, regular, "EXPERIENCE", expText, margin, y, pageW - margin*2);
-
-                // ── Skills ────────────────────────────────────────────────────
-                String skillsText = cv.getSkills() != null
-                    ? cv.getSkills().replace(",", "   •   ").replace(",,", "").trim()
-                    : "";
-                y = drawSection(cs, bold, regular, "SKILLS", skillsText, margin, y, pageW - margin*2);
-
-                // ── Activities ────────────────────────────────────────────────
-                String[] act = cv.getActivities() != null ? cv.getActivities().split("\\|", -1) : new String[3];
-                String actText = safe(get(act,1)) + " at " + safe(get(act,0)) + "\n" + safe(get(act,2));
-                y = drawSection(cs, bold, regular, "ACTIVITIES & ORGANIZATIONS", actText, margin, y, pageW - margin*2);
-
-                // ── Footer ────────────────────────────────────────────────────
-                cs.setNonStrokingColor(0.6f, 0.6f, 0.6f);
-                drawText(cs, italic, 8, margin, 20f, "Generated by Job Portal CV Builder");
+                // Page Footer
+                cs.setNonStrokingColor(0.5f, 0.5f, 0.5f);
+                drawText(cs, italic, 8, 50f, 20f, "Generated by Job Portal CV Builder");
             }
 
             doc.save(destPath);
@@ -498,32 +598,127 @@ public class CVBuilderController {
                               PDFont boldFont, PDFont bodyFont,
                               String title, String body,
                               float x, float y, float maxWidth) throws IOException {
-        if (body == null || body.isBlank()) return y;
+        return drawColumnSection(cs, boldFont, bodyFont, title, body, x, y, maxWidth, new float[]{0.15f, 0.15f, 0.15f});
+    }
+
+    private float drawColumnSection(PDPageContentStream cs, PDFont boldFont, PDFont bodyFont,
+                                    String title, String body, float x, float y, float width, float[] titleColor) throws IOException {
+        if (body == null || body.trim().isBlank()) return y;
         float lineH = 14f;
 
+        // Section title
+        cs.setNonStrokingColor(titleColor[0], titleColor[1], titleColor[2]);
+        drawText(cs, boldFont, 11, x, y - 10f, title);
+
         // Divider line
-        cs.setStrokingColor(0.75f, 0.75f, 0.75f);
-        cs.setLineWidth(0.5f);
-        cs.moveTo(x, y - 4f);
-        cs.lineTo(x + maxWidth, y - 4f);
+        cs.setStrokingColor(titleColor[0], titleColor[1], titleColor[2]);
+        cs.setLineWidth(0.8f);
+        cs.moveTo(x, y - 14f);
+        cs.lineTo(x + width, y - 14f);
         cs.stroke();
 
-        // Section title
-        cs.setNonStrokingColor(0.15f, 0.15f, 0.15f);
-        drawText(cs, boldFont, 11, x, y - 16f, title);
-        y -= 30f;
+        y -= 28f;
 
         // Body — split on newlines then wrap long lines
-        cs.setNonStrokingColor(0.25f, 0.25f, 0.25f);
+        cs.setNonStrokingColor(0.2f, 0.2f, 0.2f);
         for (String line : body.split("\n")) {
-            List<String> wrapped = wrapText(line, bodyFont, 9.5f, maxWidth);
+            List<String> wrapped = wrapText(line, bodyFont, 9f, width);
             for (String wl : wrapped) {
-                if (y < 60) break;
-                drawText(cs, bodyFont, 9.5f, x + 10, y, wl);
+                if (y < 45) break;
+                drawText(cs, bodyFont, 9, x + 5f, y, wl);
                 y -= lineH;
             }
         }
-        return y - 8f;
+        return y - 10f; // Gap after section
+    }
+
+    private void drawSidebarText(PDPageContentStream cs, PDFont font, float size,
+                                 float x, float y, String text) throws IOException {
+        if (text == null || text.isBlank()) return;
+        cs.beginText();
+        cs.setFont(font, size);
+        cs.setNonStrokingColor(1f, 1f, 1f); // White
+        cs.newLineAtOffset(x, y);
+        cs.showText(text.replaceAll("[^\\x20-\\x7E]", ""));
+        cs.endText();
+    }
+
+    private float drawSidebarSection(PDPageContentStream cs, PDFont boldFont, PDFont bodyFont,
+                                     String title, String body, float x, float y, float width) throws IOException {
+        if (body == null || body.trim().isBlank()) return y;
+        float lineH = 12f;
+
+        // Title in Gold/Accent Color
+        cs.setNonStrokingColor(1.0f, 0.84f, 0.0f);
+        drawSidebarText(cs, boldFont, 11, x, y - 10f, title);
+
+        // Divider
+        cs.setStrokingColor(1.0f, 0.84f, 0.0f);
+        cs.setLineWidth(0.5f);
+        cs.moveTo(x, y - 14f);
+        cs.lineTo(x + width, y - 14f);
+        cs.stroke();
+
+        y -= 26f;
+
+        // Body in white
+        cs.setNonStrokingColor(0.9f, 0.9f, 0.9f);
+        for (String line : body.split("\n")) {
+            List<String> wrapped = wrapText(line, bodyFont, 8.5f, width);
+            for (String wl : wrapped) {
+                if (y < 30) break;
+                cs.beginText();
+                cs.setFont(bodyFont, 8.5f);
+                cs.setNonStrokingColor(0.9f, 0.9f, 0.9f);
+                cs.newLineAtOffset(x, y);
+                cs.showText(wl.replaceAll("[^\\x20-\\x7E]", ""));
+                cs.endText();
+                y -= lineH;
+            }
+        }
+        return y - 10f;
+    }
+
+    private String getEducationText(CV cv) {
+        if (cv.getUniversityName().isEmpty()) return "";
+        return safe(cv.getDegree()) + " in " + safe(cv.getDepartment()) + "\n" +
+               safe(cv.getUniversityName()) + "\nGraduation Year: " + safe(cv.getGraduationYear());
+    }
+
+    private String getExperienceText(CV cv) {
+        String[] exp = cv.getExperience() != null ? cv.getExperience().split("\\|", -1) : new String[5];
+        if (get(exp, 0).isEmpty() && get(exp, 1).isEmpty()) return "";
+        return safe(get(exp, 1)) + " at " + safe(get(exp, 0)) + "\n" +
+               safe(get(exp, 2)) + " – " + safe(get(exp, 3)) + "\n" +
+               safe(get(exp, 4));
+    }
+
+    private String getActivitiesText(CV cv) {
+        String[] act = cv.getActivities() != null ? cv.getActivities().split("\\|", -1) : new String[3];
+        if (get(act, 0).isEmpty()) return "";
+        return safe(get(act, 1)) + " at " + safe(get(act, 0)) + "\n" + safe(get(act, 2));
+    }
+
+    private String getContactText(CV cv) {
+        StringBuilder sb = new StringBuilder();
+        if (!cv.getEmail().isEmpty()) sb.append("Email: ").append(cv.getEmail()).append("\n");
+        if (!cv.getPhone().isEmpty()) sb.append("Phone: ").append(cv.getPhone()).append("\n");
+        if (!cv.getAddress().isEmpty()) sb.append("Address: ").append(cv.getAddress()).append("\n");
+        if (cv.getLinkedin() != null && !cv.getLinkedin().isEmpty()) sb.append("LinkedIn: ").append(cv.getLinkedin()).append("\n");
+        if (cv.getGender() != null && !cv.getGender().isEmpty()) sb.append("Gender: ").append(cv.getGender());
+        return sb.toString().trim();
+    }
+
+    private String getSkillsText(CV cv) {
+        if (cv.getSkills() == null || cv.getSkills().isEmpty()) return "";
+        String[] sk = cv.getSkills().split(",", -1);
+        StringBuilder sb = new StringBuilder();
+        for (String s : sk) {
+            if (s != null && !s.trim().isEmpty()) {
+                sb.append("• ").append(s.trim()).append("\n");
+            }
+        }
+        return sb.toString().trim();
     }
 
     /** Simple greedy word-wrap. */

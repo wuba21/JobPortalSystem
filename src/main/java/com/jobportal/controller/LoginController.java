@@ -74,7 +74,7 @@ public class LoginController {
             if (SessionManager.isAdmin()) {
                 MainApp.changeScene("dashboard.fxml", "Dashboard Overview");
             } else if (SessionManager.isEmployer()) {
-                MainApp.changeScene("dashboard.fxml", "Employer Dashboard");
+                MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
             } else {
                 MainApp.changeScene("dashboard.fxml", "Dashboard Overview");
             }

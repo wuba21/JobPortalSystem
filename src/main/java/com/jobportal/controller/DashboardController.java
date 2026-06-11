@@ -24,9 +24,7 @@ public class DashboardController {
     @FXML private Label statsLabel1;
     @FXML private Label statsLabel2;
     @FXML private Label statsLabel3;
-    @FXML private VBox employerActions;
     @FXML private VBox adminActions;
-    @FXML private Button btnManageJobs;
     @FXML private VBox recommendedSection;
     @FXML private VBox recommendedJobsContainer;
 
@@ -43,18 +41,6 @@ public class DashboardController {
 
         welcomeLabel.setText("Welcome, " + SessionManager.getCurrentUser().getFullName() + "!");
         userTypeLabel.setText("Role: " + SessionManager.getCurrentUser().getUserType().replace("_", " "));
-
-        // IMMEDIATELY enforce visibility constraints to prevent accidental display if further code throws exceptions
-        if (employerActions != null) {
-            boolean isEmployerOrAdmin = SessionManager.isEmployer() || SessionManager.isAdmin();
-            employerActions.setVisible(isEmployerOrAdmin);
-            employerActions.setManaged(isEmployerOrAdmin);
-            
-            if (btnManageJobs != null) {
-                btnManageJobs.setVisible(SessionManager.isEmployer());
-                btnManageJobs.setManaged(SessionManager.isEmployer());
-            }
-        }
 
         if (adminActions != null) {
             adminActions.setVisible(SessionManager.isAdmin());
@@ -153,15 +139,7 @@ public class DashboardController {
         MainApp.changeScene("admin_dashboard.fxml", "Admin Dashboard");
     }
 
-    @FXML
-    private void handlePostJob() {
-        MainApp.changeScene("job-form.fxml", "Post a Job");
-    }
 
-    @FXML
-    private void handleManageJobs() {
-        MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
-    }
 
     @FXML
     private void handleViewApplications() {

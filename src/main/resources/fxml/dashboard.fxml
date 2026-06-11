@@ -29,10 +29,7 @@
 
                 <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleCVBuilder" style="-fx-background-color: rgba(255,255,255,0.08); -fx-text-fill: #a5f3fc; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand; -fx-background-radius: 8;" text=" CV Builder" />
                 
-                <!-- Employer Actions Container -->
-                <VBox fx:id="employerActions" spacing="10" visible="false" managed="false">
-                    <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handlePostJob" style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: #69f0ae; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand; -fx-background-radius: 8;" text=" Post a New Job" />
-                </VBox>
+
                 
                 <!-- Admin Actions Container -->
                 <VBox fx:id="adminActions" spacing="10" visible="false" managed="false">

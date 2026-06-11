@@ -89,7 +89,11 @@ public class ProfileController {
 
     @FXML
     private void handleBack() {
-        MainApp.changeScene("dashboard.fxml", "Dashboard");
+        if (SessionManager.isEmployer()) {
+            MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
+        } else {
+            MainApp.changeScene("dashboard.fxml", "Dashboard");
+        }
     }
 
     private void showStatus(String message, boolean success) {
