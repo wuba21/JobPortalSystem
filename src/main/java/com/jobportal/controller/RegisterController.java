@@ -102,7 +102,7 @@ public class RegisterController {
         String confirmPassword = confirmPasswordField.getText();
 
         if (!password.equals(confirmPassword)) {
-            AlertUtil.showError("Error", "Passwords do not match.");
+            com.jobportal.util.ToastUtil.showError(fullNameField.getScene().getWindow(), "Passwords do not match.");
             return;
         }
 
@@ -122,13 +122,13 @@ public class RegisterController {
                 if ("EMPLOYER".equals(user.getUserType())) {
                     insertEmployer(user.getId(), companyNameField.getText().trim(), industryField.getText().trim());
                 }
-                AlertUtil.showInfo("Success", "Registration successful! Please login.");
+                com.jobportal.util.ToastUtil.showSuccess(fullNameField.getScene().getWindow(), "Registration successful! Please login.");
                 MainApp.changeScene("login.fxml", "Login");
             } else {
-                AlertUtil.showError("Error", "Registration failed. Please try again.");
+                com.jobportal.util.ToastUtil.showError(fullNameField.getScene().getWindow(), "Registration failed. Please try again.");
             }
         } catch (ValidationException e) {
-            AlertUtil.showError("Validation Error", e.getMessage());
+            com.jobportal.util.ToastUtil.showError(fullNameField.getScene().getWindow(), e.getMessage());
         }
     }
 

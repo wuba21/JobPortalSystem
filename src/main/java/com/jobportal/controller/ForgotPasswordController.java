@@ -16,24 +16,39 @@ import javafx.scene.layout.VBox;
 
 public class ForgotPasswordController {
 
-    @FXML private VBox step1Box;
-    @FXML private VBox step2Box;
+    @FXML
+    private VBox step1Box;
+    @FXML
+    private VBox step2Box;
 
-    @FXML private TextField emailField;
-    @FXML private TextField phoneField;
-    @FXML private Button sendOtpButton;
-    @FXML private ProgressIndicator otpProgress;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private TextField phoneField;
+    @FXML
+    private Button sendOtpButton;
+    @FXML
+    private ProgressIndicator otpProgress;
 
-    @FXML private TextField otpField;
-    @FXML private PasswordField newPasswordField;
-    @FXML private PasswordField confirmPasswordField;
-    @FXML private Button resetButton;
-    @FXML private ProgressIndicator resetProgress;
+    @FXML
+    private TextField otpField;
+    @FXML
+    private PasswordField newPasswordField;
+    @FXML
+    private PasswordField confirmPasswordField;
+    @FXML
+    private Button resetButton;
+    @FXML
+    private ProgressIndicator resetProgress;
 
-    @FXML private TextField newPasswordTextField;
-    @FXML private ToggleButton showNewPasswordBtn;
-    @FXML private TextField confirmPasswordTextField;
-    @FXML private ToggleButton showConfirmPasswordBtn;
+    @FXML
+    private TextField newPasswordTextField;
+    @FXML
+    private ToggleButton showNewPasswordBtn;
+    @FXML
+    private TextField confirmPasswordTextField;
+    @FXML
+    private ToggleButton showConfirmPasswordBtn;
 
     private final UserService userService = new UserService();
     private String targetEmail;
@@ -52,25 +67,25 @@ public class ForgotPasswordController {
     private void handleSendOtp() {
         String email = emailField.getText().trim();
         String phone = phoneField.getText().trim();
-        
+
         if (email.isEmpty() || phone.isEmpty()) {
-            AlertUtil.showError("Error", "Please enter both Email and Phone.");
+            com.jobportal.util.ToastUtil.showError(emailField.getScene().getWindow(),
+                    "Please enter both Email and Phone.");
             return;
         }
 
         // Verify if user exists first
         if (!userService.checkEmailAndPhoneMatch(email, phone)) {
-            AlertUtil.showError("Error", "Email and phone do not match our records.");
+            com.jobportal.util.ToastUtil.showError(emailField.getScene().getWindow(),
+                    "Email and phone do not match our records.");
             return;
         }
 
         targetEmail = email;
 
         // Show instruction popup
-        AlertUtil.showInfo("Instructions", 
-            "1. Go to your Google Account (Security Section).\n" +
-            "2. Generate a 16-character 'App Password'.\n" +
-            "3. Copy that password and paste it in the next screen.");
+        com.jobportal.util.ToastUtil.showInfo(emailField.getScene().getWindow(),
+                "1. Go to Google Account (Security)\n2. Generate a 16-char 'App Password'\n3. Copy and paste here");
 
         // Move to next step
         step1Box.setVisible(false);
@@ -86,12 +101,19 @@ public class ForgotPasswordController {
         String confirmPassword = confirmPasswordField.getText();
 
         if (appPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            AlertUtil.showError("Error", "All fields are required.");
+            com.jobportal.util.ToastUtil.showError(resetButton.getScene().getWindow(), "All fields are required.");
             return;
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            AlertUtil.showError("Error", "Passwords do not match.");
+            com.jobportal.util.ToastUtil.showError(resetButton.getScene().getWindow(), "Passwords do not match.");
+            return;
+        }
+
+        // Check password strength
+        String strengthError = com.jobportal.util.PasswordUtil.getPasswordStrengthError(newPassword);
+        if (strengthError != null) {
+            com.jobportal.util.ToastUtil.showError(resetButton.getScene().getWindow(), strengthError);
             return;
         }
 
@@ -116,7 +138,8 @@ public class ForgotPasswordController {
             resetButton.setDisable(false);
             resetProgress.setVisible(false);
             if (verifyTask.getValue()) {
-                AlertUtil.showInfo("Success", "Password reset successfully!");
+                com.jobportal.util.ToastUtil.showSuccess(resetButton.getScene().getWindow(),
+                        "Password reset successfully!");
                 handleBackToLogin();
             }
         });
@@ -124,7 +147,8 @@ public class ForgotPasswordController {
         verifyTask.setOnFailed(event -> {
             resetButton.setDisable(false);
             resetProgress.setVisible(false);
-            AlertUtil.showError("Verification Failed", verifyTask.getException().getMessage());
+            com.jobportal.util.ToastUtil.showError(resetButton.getScene().getWindow(),
+                    verifyTask.getException().getMessage());
         });
 
         new Thread(verifyTask).start();

@@ -5,6 +5,7 @@ import com.jobportal.dao.impl.UserDAOImpl;
 import com.jobportal.exception.ValidationException;
 import com.jobportal.model.User;
 import com.jobportal.util.ValidationUtil;
+import com.jobportal.util.SessionManager;
 
 import java.util.List;
 
@@ -34,9 +35,13 @@ public class UserService {
         if (!ValidationUtil.isValidEmail(user.getEmail())) {
             throw new ValidationException("Invalid email format.");
         }
-        if (!ValidationUtil.isValidPassword(user.getPassword())) {
-            throw new ValidationException("Password must be at least 6 characters.");
+
+        // Check password strength (Phase 1: Strong password requirement)
+        String passwordError = com.jobportal.util.PasswordUtil.getPasswordStrengthError(user.getPassword());
+        if (passwordError != null) {
+            throw new ValidationException(passwordError);
         }
+
         if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
             throw new ValidationException("Full name is required.");
         }
@@ -71,9 +76,13 @@ public class UserService {
         if (user == null) {
             throw new ValidationException("Email not found.");
         }
-        if (!ValidationUtil.isValidPassword(newPassword)) {
-            throw new ValidationException("Password must be at least 6 characters.");
+
+        // Check password strength (Phase 1: Strong password requirement)
+        String passwordError = com.jobportal.util.PasswordUtil.getPasswordStrengthError(newPassword);
+        if (passwordError != null) {
+            throw new ValidationException(passwordError);
         }
+
         return userDAO.updatePassword(user.getId(), newPassword);
     }
 
@@ -83,5 +92,26 @@ public class UserService {
 
     public int countByType(String userType) {
         return userDAO.countByType(userType);
+    }
+
+    public int getOrLoadEmployerId(User user) {
+        if (user == null || !"EMPLOYER".equals(user.getUserType())) {
+            return -1;
+        }
+        int empId = SessionManager.getEmployerId();
+        if (empId > 0) {
+            return empId;
+        }
+        // Query database
+        empId = userDAO.getEmployerIdByUserId(user.getId());
+        if (empId <= 0) {
+            // Auto-create to prevent data inconsistency
+            String companyName = user.getFullName() + " Company";
+            empId = userDAO.createEmployer(user.getId(), companyName, "Other");
+        }
+        if (empId > 0) {
+            SessionManager.setEmployerId(empId);
+        }
+        return empId;
     }
 }

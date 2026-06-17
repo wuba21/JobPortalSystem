@@ -2,9 +2,11 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.BorderPane?>
@@ -23,14 +25,26 @@
                 <Button mnemonicParsing="false" onAction="#handleBackToDashboard" style="-fx-background-color: #64748b; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Back to Main" />
             </HBox>
             
-            <HBox fx:id="filterBox" alignment="CENTER" spacing="20">
-                <ToggleButton fx:id="recentJobsBtn" selected="true" styleClass="filter-toggle" text="Recent Jobs">
-                    <toggleGroup>
-                        <ToggleGroup fx:id="filterGroup" />
-                    </toggleGroup>
-                </ToggleButton>
-                <ToggleButton fx:id="longTermJobsBtn" styleClass="filter-toggle" text="Long-Term Jobs" toggleGroup="$filterGroup" />
-            </HBox>
+            <VBox spacing="15">
+                <HBox fx:id="filterBox" alignment="CENTER" spacing="20">
+                    <ToggleButton fx:id="recentJobsBtn" selected="true" styleClass="filter-toggle" text="Recent Jobs">
+                        <toggleGroup>
+                            <ToggleGroup fx:id="filterGroup" />
+                        </toggleGroup>
+                    </ToggleButton>
+                    <ToggleButton fx:id="longTermJobsBtn" styleClass="filter-toggle" text="Long-Term Jobs" toggleGroup="$filterGroup" />
+                    <ToggleButton fx:id="advancedSearchBtn" styleClass="filter-toggle" text="Advanced Search" toggleGroup="$filterGroup" />
+                </HBox>
+                
+                <HBox fx:id="advancedSearchBox" alignment="CENTER" spacing="10" visible="false" managed="false" style="-fx-padding: 10; -fx-background-color: #f1f5f9; -fx-border-radius: 10; -fx-background-radius: 10;">
+                    <TextField fx:id="keywordField" promptText="Job Title or Keyword..." style="-fx-pref-width: 150;" />
+                    <TextField fx:id="locationField" promptText="Location..." style="-fx-pref-width: 120;" />
+                    <ComboBox fx:id="jobTypeCombo" promptText="Job Type" style="-fx-pref-width: 120;" />
+                    <TextField fx:id="minSalaryField" promptText="Min Salary" style="-fx-pref-width: 100;" />
+                    <TextField fx:id="maxSalaryField" promptText="Max Salary" style="-fx-pref-width: 100;" />
+                    <Button mnemonicParsing="false" onAction="#handleAdvancedSearch" style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Search" />
+                </HBox>
+            </VBox>
         </VBox>
     </top>
     

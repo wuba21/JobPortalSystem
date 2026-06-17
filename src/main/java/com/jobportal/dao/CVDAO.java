@@ -17,4 +17,7 @@ public interface CVDAO {
 
     /** Update only the pdfPath column for a given CV id. */
     boolean updatePdfPath(int cvId, String pdfPath);
+
+    /** Delete all CV records for a given user (clean up after generation/apply). */
+    boolean deleteByUserId(int userId);
 }

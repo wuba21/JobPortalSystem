@@ -423,7 +423,7 @@ public class CVBuilderController {
         task.setOnSucceeded(e -> {
             String path = task.getValue();
             cv.setPdfPath(path);
-            // Persist CV with pdf path
+            // Persist CV with pdf path, then immediately clean up the DB draft
             if (currentCVId == -1) {
                 int id = cvDAO.save(cv);
                 if (id > 0) currentCVId = id;
@@ -431,9 +431,16 @@ public class CVBuilderController {
                 cv.setId(currentCVId);
                 cvDAO.update(cv);
             }
+            // Delete the saved draft so the builder opens clean next time
+            if (SessionManager.getCurrentUser() != null) {
+                cvDAO.deleteByUserId(SessionManager.getCurrentUser().getId());
+            }
+            currentCVId = -1;
             showStatus("✅ PDF saved to: " + file.getName(), "green");
-            AlertUtil.showInfo("PDF Generated", "Your CV has been saved successfully to:\n" + path);
-            clearForm(); // Clear CV form fields after generation
+            AlertUtil.showInfo("PDF Generated",
+                "Your CV PDF has been saved to:\n" + path +
+                "\n\nThe CV Builder has been reset and is ready for a new CV.");
+            clearForm(); // Reset all form fields
         });
         task.setOnFailed(e -> {
             task.getException().printStackTrace();
@@ -627,8 +634,19 @@ public class CVBuilderController {
     @FXML
     private void handleApplyUsingCV() {
         if (currentCVId == -1) {
-            AlertUtil.showError("Save First", "Please save or generate your CV first before applying.");
-            return;
+            // Auto-save to DB first so ApplyController can pick up the path
+            CV cv = buildCVFromForm();
+            if (cv.getFullName().isEmpty()) {
+                AlertUtil.showError("Incomplete", "Please fill in your Full Name before applying.");
+                return;
+            }
+            int id = cvDAO.save(cv);
+            if (id > 0) {
+                currentCVId = id;
+            } else {
+                AlertUtil.showError("Save Failed", "Could not save your CV. Please try again.");
+                return;
+            }
         }
         if (SessionManager.getCurrentJob() == null) {
             AlertUtil.showInfo("No Job Selected",
@@ -636,19 +654,17 @@ public class CVBuilderController {
             MainApp.changeScene("job_dashboard.fxml", "Browse Jobs");
             return;
         }
-        // Navigate to apply page — CV path will be picked up from DB
-        MainApp.changeScene("apply.fxml", "Apply for Job");
+        // Navigate to apply page — CV PDF path will be picked up from DB
+        MainApp.changeScene("apply-form.fxml", "Apply for Job");
     }
 
     // ── Back ──────────────────────────────────────────────────────────────────
     @FXML
     private void handleBack() {
-        if (SessionManager.isEmployer()) {
-            MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
-        } else if (SessionManager.isAdmin()) {
+        if (SessionManager.isAdmin()) {
             MainApp.changeScene("admin_dashboard.fxml", "Admin Panel");
         } else {
-            MainApp.changeScene("dashboard.fxml", "Dashboard");
+            MainApp.goBackToDashboard();
         }
     }
 

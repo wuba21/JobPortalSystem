@@ -78,14 +78,17 @@ public class ApplicationController {
             private final Button resumeBtn = new Button("Resume");
             private final ComboBox<String> statusBox = new ComboBox<>();
             private final Button updateBtn = new Button("Save");
+            private final Button msgBtn = new Button("💬 Message");
             private final javafx.scene.layout.HBox employerBox = new javafx.scene.layout.HBox(5, statusBox, updateBtn,
-                    resumeBtn);
+                    resumeBtn, msgBtn);
 
             {
                 resumeBtn.setStyle(
                         "-fx-background-color: #475569; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
                 updateBtn.setStyle(
                         "-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+                msgBtn.setStyle(
+                        "-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
                 statusBox.getItems().addAll("PENDING", "REVIEWED", "SHORTLISTED", "REJECTED", "ACCEPTED");
 
                 resumeBtn.setOnAction(e -> {
@@ -96,10 +99,21 @@ public class ApplicationController {
                         try {
                             java.awt.Desktop.getDesktop().open(new java.io.File(app.getResumePath()));
                         } catch (Exception ex) {
-                            AlertUtil.showError("Error", "Could not open resume.");
+                            com.jobportal.util.ToastUtil.showError(resumeBtn.getScene().getWindow(), "Could not open resume.");
                         }
                     } else {
-                        AlertUtil.showWarning("Warning", "No resume attached.");
+                        com.jobportal.util.ToastUtil.showError(resumeBtn.getScene().getWindow(), "No resume attached.");
+                    }
+                });
+
+                msgBtn.setOnAction(e -> {
+                    Application app = getTableRow().getItem();
+                    if (app == null) return;
+                    com.jobportal.model.User applicant = userService.findById(app.getUserId());
+                    if (applicant != null) {
+                        SessionManager.setContactUser(applicant);
+                        // Navigate to messages
+                        EmployerDashboardController.getInstance().loadCenterPage("messages.fxml");
                     }
                 });
 
@@ -133,7 +147,7 @@ public class ApplicationController {
                             }
                         }
 
-                        AlertUtil.showInfo("Success",
+                        com.jobportal.util.ToastUtil.showSuccess(updateBtn.getScene().getWindow(),
                                 "Status updated to " + newStatus + ".\n(Notification sent to applicant)");
                         loadApplications();
                     }
@@ -173,6 +187,10 @@ public class ApplicationController {
             return;
         }
 
+        if (SessionManager.isEmployer()) {
+            userService.getOrLoadEmployerId(SessionManager.getCurrentUser());
+        }
+
         List<Application> applications;
         if (SessionManager.isEmployer() && SessionManager.getEmployerId() > 0) {
             applications = applicationService.findByEmployerId(SessionManager.getEmployerId());
@@ -188,7 +206,7 @@ public class ApplicationController {
     @FXML
     private void handleBackToDashboard() {
         if (SessionManager.getCurrentUser() != null) {
-            MainApp.changeScene("dashboard.fxml", "Dashboard Overview");
+            MainApp.goBackToDashboard();
         } else {
             MainApp.changeScene("Home.fxml", "Home");
         }

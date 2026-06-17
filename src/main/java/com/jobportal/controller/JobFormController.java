@@ -42,7 +42,7 @@ public class JobFormController {
 
     @FXML
     public void initialize() {
-        jobTypeCombo.getItems().addAll("FULL_TIME", "PART_TIME", "CONTRACT", "INTERNSHIP", "REMOTE");
+        jobTypeCombo.getItems().addAll("FULL_TIME", "PART_TIME", "CONTRACT", "INTERNSHIP", "REMOTE", "HYBRID");
         jobTypeCombo.setValue("FULL_TIME");
 
         experienceCombo.getItems().addAll("ENTRY", "MID", "SENIOR", "EXECUTIVE");
@@ -188,7 +188,7 @@ public class JobFormController {
                         MainApp.changeScene("dashboard.fxml", "Dashboard");
                     }
                 } else if (SessionManager.isEmployer()) {
-                    MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
+                    MainApp.goBackToDashboard();
                 } else {
                     MainApp.changeScene("dashboard.fxml", "Dashboard");
                 }
@@ -208,10 +208,8 @@ public class JobFormController {
             } else {
                 MainApp.changeScene("admin_dashboard.fxml", "Admin Dashboard");
             }
-        } else if (SessionManager.isEmployer()) {
-            MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
         } else {
-            MainApp.changeScene("dashboard.fxml", "Dashboard");
+            MainApp.goBackToDashboard();
         }
     }
 

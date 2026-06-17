@@ -1,6 +1,8 @@
 package com.jobportal.controller;
 
 import com.jobportal.MainApp;
+import com.jobportal.util.AlertUtil;
+import com.jobportal.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 import java.io.IOException;
@@ -28,17 +30,18 @@ public class HomeController {
     // 🔷 POST JOB (LOGIN REQUIRED LOGIC)
     @FXML
     private void handlePostJob(ActionEvent event) throws IOException {
-        // Simple check (later replace with SessionManager)
-        boolean isLoggedIn = false;
-
-        if (!isLoggedIn) {
+        if (!SessionManager.isLoggedIn()) {
             MainApp.changeScene("login.fxml", "Login Required");
-        } else {
+        } else if (SessionManager.isEmployer() || SessionManager.isAdmin()) {
             MainApp.changeScene("job-form.fxml", "Post Job");
+        } else {
+            AlertUtil.showInfo(
+                    "Access Restricted",
+                    "Only employers or admins can post jobs.");
         }
     }
 
-    // 🔷 SHOW GROUP MEMBERS 
+    // 🔷 SHOW GROUP MEMBERS
     @FXML
     private void handleShowGroup(ActionEvent event) throws IOException {
         MainApp.changeScene("group.fxml", "Group Members");

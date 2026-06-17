@@ -3,36 +3,77 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.EmployerDashboardController" style="-fx-background-color: #f0f4f8;">
-    <left>
-        <VBox prefWidth="250" spacing="10" style="-fx-background-color: linear-gradient(to bottom, #1a237e, #283593); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 2, 0);">
-            <padding>
-                <Insets bottom="20" left="15" right="15" top="30" />
-            </padding>
-            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 0 0 20 0; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 0 0 1 0;">
-                <Label style="-fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: white; -fx-letter-spacing: 2px;" text="EMPLOYER" />
-                <Label style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: #e8eaf6; -fx-padding: 4 12; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold;" text="Role: EMPLOYER" />
-            </VBox>
-
-            <VBox spacing="10" style="-fx-padding: 20 0 0 0;" VBox.vgrow="ALWAYS">
-                <Label style="-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 0 0 10 5;" text="MAIN MENU" />
+<BorderPane fx:id="employerBorderPane" prefHeight="700.0" prefWidth="1000.0" styleClass="main-pane" stylesheets="@../css/dashboard.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.EmployerDashboardController">
+    <!-- TOP SECTION: HEADER & SECONDARY NAVBAR -->
+    <top>
+        <VBox>
+            <!-- Top Header (80px) -->
+            <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="top-header">
+                <padding>
+                    <Insets left="30.0" right="30.0" />
+                </padding>
                 
-                <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleManageJobs" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand;" text=" 📝 Manage Jobs" />
+                <!-- Logo & Branding -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="logo-box">
+                    <ImageView fitHeight="35.0" fitWidth="35.0" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/logo.jpg" />
+                        </image>
+                    </ImageView>
+                    <Label styleClass="logo-text" text="JobPortal" />
+                </HBox>
                 
-                <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handlePostJob" style="-fx-background-color: rgba(255,255,255,0.08); -fx-text-fill: #69f0ae; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand; -fx-background-radius: 8;" text=" ➕ Post Job" />
+                <Region HBox.hgrow="ALWAYS" />
                 
-                <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleViewApplications" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand;" text=" 👥 View Applications" />
+                <!-- Center Nav Links -->
+                <HBox alignment="CENTER" spacing="25.0" styleClass="nav-links">
+                    <Button onAction="#handleNavHome" styleClass="nav-link-btn" text="Home" />
+                    <Button onAction="#handleNavJobs" styleClass="nav-link-btn" text="Jobs" />
+                    <Button onAction="#handleNavCompanies" styleClass="nav-link-btn" text="Companies" />
+                    <Button onAction="#handleNavAbout" styleClass="nav-link-btn" text="About" />
+                    <Button onAction="#handleNavContact" styleClass="nav-link-btn" text="Contact" />
+                </HBox>
                 
-                <Button alignment="BASELINE_LEFT" maxWidth="Infinity" onAction="#handleLogout" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 12 15; -fx-cursor: hand;" text=" 🚪 Logout" />
-            </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                
+                <!-- Right Profile Dropdown -->
+                <HBox alignment="CENTER" spacing="10.0">
+                    <MenuButton fx:id="profileMenu" styleClass="profile-dropdown" text="👤 Employer User">
+                        <items>
+                            <MenuItem onAction="#handleViewProfile" text="👤 Profile" />
+                            <MenuItem onAction="#handleNotifications" text="🔔 Notifications" />
+                            <MenuItem onAction="#handleMessages" text="💬 Messages" />
+                            <MenuItem onAction="#handleSavedJobs" text="🔖 Saved Jobs" />
+                            <MenuItem onAction="#handleSettings" text="⚙ Settings" />
+                            <MenuItem onAction="#handleLogout" text="🚪 Logout" />
+                        </items>
+                    </MenuButton>
+                </HBox>
+            </HBox>
+            
+            <!-- Secondary Navbar (80px) -->
+            <HBox alignment="CENTER" prefHeight="80.0" spacing="20.0" styleClass="secondary-navbar">
+                <Button onAction="#handleNavDashboard" styleClass="sec-nav-btn" text="🏠 Dashboard" />
+                <Button onAction="#handleNavJobs" styleClass="sec-nav-btn" text="🔍 Browse Jobs" />
+                <Button onAction="#handleCVBuilder" styleClass="sec-nav-btn" text="📋 CV Builder" />
+                <Button onAction="#handleManageJobs" styleClass="sec-nav-btn" text="📝 Manage Jobs" />
+                <Button onAction="#handlePostJob" styleClass="sec-nav-btn" text="➕ Post Job" />
+                <Button onAction="#handleViewApplications" styleClass="sec-nav-btn" text="👥 View Applications" />
+            </HBox>
         </VBox>
-    </left>
+    </top>
+    
+    <!-- MAIN CONTENT AREA: DYNAMICALLY POPULATED -->
     <center>
-        <StackPane fx:id="contentArea" style="-fx-background-color: transparent;" />
+        <!-- Content gets loaded here by controller -->
     </center>
 </BorderPane>

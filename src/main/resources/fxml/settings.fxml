@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.SettingsController">
+    <VBox alignment="CENTER" spacing="20.0">
+        <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
+        </padding>
+        <VBox maxWidth="600.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Account Settings" />
+            
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #475569; -fx-font-size: 16px;" text="Security: Change Password" />
+            <VBox spacing="5.0">
+                <Label style="-fx-text-fill: #475569;" text="Current Password *" />
+                <PasswordField fx:id="currentPasswordField" style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #cbd5e1; -fx-border-radius: 5;" />
+            </VBox>
+            
+            <VBox spacing="5.0">
+                <Label style="-fx-text-fill: #475569;" text="New Password *" />
+                <PasswordField fx:id="newPasswordField" style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #cbd5e1; -fx-border-radius: 5;" />
+            </VBox>
+            
+            <VBox spacing="5.0">
+                <Label style="-fx-text-fill: #475569;" text="Confirm New Password *" />
+                <PasswordField fx:id="confirmPasswordField" style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #cbd5e1; -fx-border-radius: 5;" />
+            </VBox>
+            
+            <Separator />
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #475569; -fx-font-size: 16px;" text="Notification Preferences" />
+            <CheckBox fx:id="emailNotifCheck" text="Receive Email Notifications" selected="true" style="-fx-text-fill: #475569;" />
+            <CheckBox fx:id="smsNotifCheck" text="Receive SMS Notifications" selected="false" style="-fx-text-fill: #475569;" />
+            <CheckBox fx:id="jobAlertCheck" text="Receive Job Alerts" selected="true" style="-fx-text-fill: #475569;" />
+            
+            <Separator />
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #475569; -fx-font-size: 16px;" text="Privacy" />
+            <CheckBox fx:id="profileVisibilityCheck" text="Make my profile public to employers" selected="true" style="-fx-text-fill: #475569;" />
+            
+            <Label fx:id="statusLabel" visible="false" />
+
+            <HBox spacing="10">
+                <Button fx:id="saveButton" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveSettings" style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 12; -fx-background-radius: 5; -fx-cursor: hand;" text="Save Settings" />
+            </HBox>
+        </VBox>
+    </VBox>
+</ScrollPane>

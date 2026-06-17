@@ -13,4 +13,6 @@ public interface UserDAO {
     boolean updatePassword(int userId, String newPassword);
     boolean delete(int id);
     int countByType(String userType);
+    int getEmployerIdByUserId(int userId);
+    int createEmployer(int userId, String companyName, String industry);
 }

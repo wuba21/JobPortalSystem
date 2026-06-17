@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane style="-fx-background-color: #f1f5f9;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jobportal.controller.MessagesController">
+    <!-- Left Panel: Contacts List -->
+    <left>
+        <VBox prefWidth="300.0" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 0 1 0 0;">
+            <HBox alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;">
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Messages" />
+            </HBox>
+            <ListView fx:id="contactsListView" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-border-width: 0;" />
+        </VBox>
+    </left>
+
+    <!-- Right Panel: Chat Area -->
+    <center>
+        <VBox fx:id="chatArea" visible="false">
+            <!-- Chat Header -->
+            <HBox alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                <Label fx:id="chatUserNameLabel" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Select a contact" />
+            </HBox>
+            
+            <!-- Chat Messages -->
+            <ScrollPane fx:id="chatScrollPane" fitToWidth="true" vvalue="1.0" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-padding: 10;">
+                <VBox fx:id="messagesContainer" spacing="10.0">
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </VBox>
+            </ScrollPane>
+            
+            <!-- Message Input Area -->
+            <HBox spacing="10.0" style="-fx-padding: 15; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1 0 0 0;">
+                <TextField fx:id="messageInputField" HBox.hgrow="ALWAYS" promptText="Type a message..." style="-fx-padding: 10; -fx-background-radius: 20; -fx-border-color: #cbd5e1; -fx-border-radius: 20;" onAction="#handleSendMessage" />
+                <Button mnemonicParsing="false" onAction="#handleSendMessage" style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20; -fx-cursor: hand;" text="Send" />
+            </HBox>
+        </VBox>
+    </center>
+    
+    <!-- Empty State -->
+    <center>
+        <VBox fx:id="emptyState" alignment="CENTER" spacing="15.0">
+            <Label style="-fx-font-size: 48px; -fx-text-fill: #cbd5e1;" text="💬" />
+            <Label style="-fx-font-size: 18px; -fx-text-fill: #64748b;" text="Select a conversation to start messaging" />
+        </VBox>
+    </center>
+</BorderPane>

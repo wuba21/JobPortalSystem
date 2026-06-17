@@ -114,11 +114,7 @@ public class EmployerManageJobsController {
     @FXML
     private void handleBackToDashboard() {
         if (SessionManager.getCurrentUser() != null) {
-            if (SessionManager.isEmployer()) {
-                MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
-            } else {
-                MainApp.changeScene("dashboard.fxml", "Dashboard Overview");
-            }
+            MainApp.goBackToDashboard();
         } else {
             MainApp.changeScene("Home.fxml", "Home");
         }

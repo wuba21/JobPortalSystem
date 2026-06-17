@@ -25,14 +25,27 @@
                 <Region HBox.hgrow="ALWAYS" />
             </HBox>
             
+            <!-- Basic Search Controls -->
             <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: white; -fx-padding: 10 15; -fx-background-radius: 50; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);">
-                <TextField fx:id="searchField" promptText="Job Title or Keyword..." style="-fx-background-color: transparent; -fx-font-size: 15px;" HBox.hgrow="ALWAYS" />
+                <TextField fx:id="keywordField" promptText="Job Title or Keyword..." style="-fx-background-color: transparent; -fx-font-size: 15px;" HBox.hgrow="ALWAYS" />
                 <Separator orientation="VERTICAL" />
-                <TextField fx:id="locationFilter" promptText="Location..." style="-fx-background-color: transparent; -fx-font-size: 15px;" prefWidth="150" />
-                <Separator orientation="VERTICAL" />
-                <ComboBox fx:id="jobTypeFilter" prefWidth="140" style="-fx-background-color: transparent; -fx-font-size: 15px;" />
-                <Button onAction="#handleSearch" style="-fx-background-color: #00e676; -fx-text-fill: #1a237e; -fx-font-weight: bold; -fx-font-size: 15px; -fx-padding: 10 30; -fx-background-radius: 30; -fx-cursor: hand;" text="Search" />
-                <Button onAction="#handleClearSearch" style="-fx-background-color: #f1f5f9; -fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 15px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand;" text="Clear" />
+                <ComboBox fx:id="jobTypeCombo" prefWidth="140" style="-fx-background-color: transparent; -fx-font-size: 15px;" />
+                <ToggleButton fx:id="advancedSearchBtn" text="🔍 Filters" style="-fx-background-color: #f1f5f9; -fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 8 15; -fx-background-radius: 25; -fx-cursor: hand;" />
+            </HBox>
+            
+            <!-- Advanced Search Controls (Hidden by default) -->
+            <HBox fx:id="advancedSearchBox" visible="false" managed="false" alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #f8fafc; -fx-padding: 15; -fx-background-radius: 12; -fx-border-color: #e2e8f0; -fx-border-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                <Label text="Location:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                <TextField fx:id="locationField" promptText="City, Country..." style="-fx-min-width: 150; -fx-font-size: 14px;" />
+                
+                <Label text="Salary Range:" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 0 0 0 15;" />
+                <TextField fx:id="minSalaryField" promptText="Min" style="-fx-max-width: 100; -fx-font-size: 14px;" />
+                <Label text="-" style="-fx-font-size: 14px;" />
+                <TextField fx:id="maxSalaryField" promptText="Max" style="-fx-max-width: 100; -fx-font-size: 14px;" />
+                
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#handleAdvancedSearch" style="-fx-background-color: #00e676; -fx-text-fill: #1a237e; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 25; -fx-background-radius: 25; -fx-cursor: hand;" text="🔎 Search" />
+                <Button onAction="#handleResetFilters" style="-fx-background-color: #f1f5f9; -fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 25; -fx-cursor: hand;" text="Reset" />
             </HBox>
         </VBox>
     </top>

@@ -125,6 +125,48 @@ public class JobDAOImpl implements JobDAO {
     }
 
     @Override
+    public List<Job> advancedSearch(String keyword, String location, String jobType, java.math.BigDecimal minSalary, java.math.BigDecimal maxSalary) {
+        List<Job> jobs = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT j.*, e.company_name FROM jobs j JOIN employers e ON j.employer_id = e.id WHERE j.is_active = TRUE AND (j.deadline IS NULL OR j.deadline >= CURDATE())");
+        List<Object> params = new ArrayList<>();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            sql.append(" AND (j.title LIKE ? OR j.description LIKE ?)");
+            params.add("%" + keyword + "%");
+            params.add("%" + keyword + "%");
+        }
+        if (location != null && !location.isEmpty()) {
+            sql.append(" AND j.location LIKE ?");
+            params.add("%" + location + "%");
+        }
+        if (jobType != null && !jobType.isEmpty() && !jobType.equalsIgnoreCase("Any")) {
+            sql.append(" AND j.job_type = ?");
+            params.add(jobType);
+        }
+        if (minSalary != null) {
+            sql.append(" AND j.salary_min >= ?");
+            params.add(minSalary);
+        }
+        if (maxSalary != null) {
+            sql.append(" AND j.salary_max <= ?");
+            params.add(maxSalary);
+        }
+        sql.append(" ORDER BY j.posted_at DESC");
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) jobs.add(mapResultSetToJob(rs));
+        } catch (SQLException e) {
+            System.err.println("Search jobs error: " + e.getMessage());
+        }
+        return jobs;
+    }
+
+    @Override
     public List<Job> findRecentJobs() {
         List<Job> jobs = new ArrayList<>();
         // jobs posted within last 5 days

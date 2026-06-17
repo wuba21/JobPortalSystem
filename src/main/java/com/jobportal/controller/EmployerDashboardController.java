@@ -3,80 +3,102 @@ package com.jobportal.controller;
 import com.jobportal.MainApp;
 import com.jobportal.util.AlertUtil;
 import com.jobportal.util.SessionManager;
+import com.jobportal.service.UserService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.MenuButton;
+import javafx.scene.layout.BorderPane;
 
-import java.io.IOException;
-
+/**
+ * Controller class for the standalone premium Employer Dashboard wrapper layout.
+ * Manages parent border pane navigation loaders, static references, profile menus, and auth checks.
+ */
 public class EmployerDashboardController {
 
-    @FXML
-    private StackPane contentArea;
+    private static EmployerDashboardController instance;
+
+    @FXML private BorderPane employerBorderPane;
+    @FXML private MenuButton profileMenu;
+
+    public static EmployerDashboardController getInstance() {
+        return instance;
+    }
 
     @FXML
     public void initialize() {
-        if (!SessionManager.isEmployer()) {
-            MainApp.changeScene("login.fxml", "Login");
+        // 1. Role-based Authentication Check
+        if (SessionManager.getCurrentUser() == null) {
+            MainApp.restoreMainLayout("login.fxml", "Login");
             return;
         }
-        
+        if (!SessionManager.isEmployer()) {
+            AlertUtil.showError("Access Denied", "Only logged-in Employer accounts can view this dashboard.");
+            MainApp.restoreMainLayout("login.fxml", "Login");
+            return;
+        }
+
+        instance = this;
+
         // Ensure employer ID is loaded
-        if (SessionManager.getEmployerId() <= 0) {
-            loadEmployerId();
+        new UserService().getOrLoadEmployerId(SessionManager.getCurrentUser());
+
+        // Set up profile username text
+        String userName = SessionManager.getCurrentUser().getFullName();
+        if (profileMenu != null) {
+            profileMenu.setText("👤 " + userName);
         }
 
-        // By default load "Manage Jobs" or "Dashboard overview"
-        loadPage("/fxml/employer_manage_jobs.fxml");
+        // By default, load the Employer Overview sub-view inside the center content area
+        loadCenterPage("employer_overview.fxml");
     }
 
-    private void loadEmployerId() {
-        String sql = "SELECT id FROM employers WHERE user_id = ?";
-        try (java.sql.Connection conn = com.jobportal.config.DBConnection.getConnection();
-             java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, SessionManager.getCurrentUser().getId());
-            java.sql.ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                SessionManager.setEmployerId(rs.getInt("id"));
-            }
-        } catch (java.sql.SQLException e) {
-            System.err.println("Load employer ID error: " + e.getMessage());
+    /**
+     * Loads a sub-FXML file dynamically inside the center content area of the Employer Dashboard.
+     * Keeps the top header and secondary navbar fixed.
+     *
+     * @param fxmlFile the name of the FXML file under the resources/fxml/ folder
+     */
+    public void loadCenterPage(String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxmlFile));
+            Parent root = loader.load();
+            employerBorderPane.setCenter(root);
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.showError("Navigation Error", "Could not load sub-page: " + fxmlFile);
         }
     }
 
-    @FXML
-    private void handlePostJob() {
-        SessionManager.setCurrentJob(null); // Clear any editing job
-        loadPage("/fxml/job-form.fxml");
+    public void loadCenterPage(Parent root) {
+        employerBorderPane.setCenter(root);
     }
 
-    @FXML
-    private void handleManageJobs() {
-        loadPage("/fxml/employer_manage_jobs.fxml");
-    }
+    // ── Primary Navigation Actions (Top Header Links) ──
+    @FXML private void handleNavHome()      { MainApp.restoreMainLayout("Home.fxml", "Home"); }
+    @FXML private void handleNavCompanies() { MainApp.restoreMainLayout("companies.fxml", "Companies"); }
+    @FXML private void handleNavAbout()     { MainApp.restoreMainLayout("about.fxml", "About"); }
+    @FXML private void handleNavContact()   { MainApp.restoreMainLayout("contact.fxml", "Contact"); }
 
-    @FXML
-    private void handleViewApplications() {
-        loadPage("/fxml/application-list.fxml");
-    }
+    // ── Secondary Navigation Actions (Dashboard Menu Bar loaded dynamically inside center) ──
+    @FXML private void handleNavDashboard()     { loadCenterPage("employer_overview.fxml"); }
+    @FXML private void handleNavJobs()          { loadCenterPage("job_dashboard.fxml"); }
+    @FXML private void handleCVBuilder()        { loadCenterPage("cv_builder.fxml"); }
+    @FXML private void handleManageJobs()       { loadCenterPage("employer_manage_jobs.fxml"); }
+    @FXML private void handlePostJob()          { SessionManager.setCurrentJob(null); loadCenterPage("job-form.fxml"); }
+    @FXML private void handleViewApplications() { loadCenterPage("application-list.fxml"); }
 
+    // ── Dropdown Actions (Profile Dropdown Menu) ──
+    @FXML private void handleViewProfile() { loadCenterPage("profile.fxml"); }
+    @FXML private void handleNotifications() { loadCenterPage("notifications.fxml"); }
+    @FXML private void handleMessages() { loadCenterPage("messages.fxml"); }
+    @FXML private void handleSavedJobs() { loadCenterPage("saved_jobs.fxml"); }
+    @FXML private void handleSettings()    { loadCenterPage("settings.fxml"); }
     @FXML
     private void handleLogout() {
         if (AlertUtil.showConfirmation("Logout", "Are you sure you want to logout?")) {
             SessionManager.logout();
-            MainApp.changeScene("login.fxml", "Login");
-        }
-    }
-
-    private void loadPage(String fxmlPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            contentArea.getChildren().setAll(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-            AlertUtil.showError("Error", "Failed to load page: " + fxmlPath);
+            MainApp.restoreMainLayout("login.fxml", "Login");
         }
     }
 }

@@ -128,4 +128,18 @@ public class CVDAOImpl implements CVDAO {
         }
         return false;
     }
+
+    @Override
+    public boolean deleteByUserId(int userId) {
+        String sql = "DELETE FROM applicant_cv WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("CV deleteByUserId error: " + e.getMessage());
+        }
+        return false;
+    }
 }

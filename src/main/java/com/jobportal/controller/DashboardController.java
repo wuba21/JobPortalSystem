@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,7 +25,8 @@ public class DashboardController {
     @FXML private Label statsLabel1;
     @FXML private Label statsLabel2;
     @FXML private Label statsLabel3;
-    @FXML private VBox adminActions;
+    @FXML private HBox adminActions;
+    @FXML private HBox employerActions;
     @FXML private VBox recommendedSection;
     @FXML private VBox recommendedJobsContainer;
 
@@ -45,6 +47,12 @@ public class DashboardController {
         if (adminActions != null) {
             adminActions.setVisible(SessionManager.isAdmin());
             adminActions.setManaged(SessionManager.isAdmin());
+        }
+
+        if (employerActions != null) {
+            boolean isEmployer = SessionManager.isEmployer();
+            employerActions.setVisible(isEmployer);
+            employerActions.setManaged(isEmployer);
         }
 
         // Load employer ID if employer
@@ -149,6 +157,17 @@ public class DashboardController {
     @FXML
     private void handleCVBuilder() {
         MainApp.changeScene("cv_builder.fxml", "CV Builder");
+    }
+
+    @FXML
+    private void handleManageJobs() {
+        MainApp.changeScene("employer_manage_jobs.fxml", "Manage Jobs");
+    }
+
+    @FXML
+    private void handlePostJob() {
+        SessionManager.setCurrentJob(null);
+        MainApp.changeScene("job-form.fxml", "Post a Job");
     }
 
     @FXML

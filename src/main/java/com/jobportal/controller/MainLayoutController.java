@@ -4,17 +4,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
 import javafx.scene.layout.BorderPane;
 import com.jobportal.util.SessionManager;
+import javafx.scene.control.MenuItem;
 import com.jobportal.MainApp;
-
-import javafx.scene.control.MenuButton;
 
 public class MainLayoutController {
 
-    @FXML private BorderPane mainBorderPane;
-    @FXML private MenuButton profileMenu;
-    @FXML private Button btnSignIn;
+    @FXML
+    private BorderPane mainBorderPane;
+    @FXML
+    private MenuButton profileMenu;
+    @FXML
+    private MenuItem menuDashboard;
+    @FXML
+    private Button btnSignIn;
 
     @FXML
     public void initialize() {
@@ -30,12 +35,18 @@ public class MainLayoutController {
                 profileMenu.setVisible(true);
                 profileMenu.setManaged(true);
             }
+            if (menuDashboard != null) {
+                menuDashboard.setVisible(true);
+            }
         } else {
             btnSignIn.setVisible(true);
             btnSignIn.setManaged(true);
             if (profileMenu != null) {
                 profileMenu.setVisible(false);
                 profileMenu.setManaged(false);
+            }
+            if (menuDashboard != null) {
+                menuDashboard.setVisible(false);
             }
         }
     }
@@ -89,7 +100,7 @@ public class MainLayoutController {
     @FXML
     private void handleLogout() {
         SessionManager.logout();
-        setCenterContent("login.fxml"); 
+        setCenterContent("login.fxml");
     }
 
     @FXML
@@ -104,7 +115,17 @@ public class MainLayoutController {
 
     @FXML
     private void handleNotifications() {
-        setCenterContent("notifications.fxml");
+        MainApp.changeScene("notifications.fxml", "Notifications");
+    }
+
+    @FXML
+    private void handleMessages() {
+        MainApp.changeScene("messages.fxml", "Messages");
+    }
+
+    @FXML
+    private void handleSettings() {
+        setCenterContent("settings.fxml");
     }
 
     @FXML
@@ -112,4 +133,14 @@ public class MainLayoutController {
         MainApp.changeScene("cv_builder.fxml", "CV Builder");
     }
 
+    @FXML
+    private void handleDashboard() {
+        if (SessionManager.isEmployer()) {
+            MainApp.setRoot("employer_dashboard.fxml", "Employer Dashboard");
+        } else if (SessionManager.isAdmin()) {
+            MainApp.changeScene("admin_dashboard.fxml", "Admin Dashboard");
+        } else {
+            MainApp.changeScene("dashboard.fxml", "Dashboard");
+        }
+    }
 }

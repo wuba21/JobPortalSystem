@@ -9,6 +9,10 @@ public class SessionManager {
     private static com.jobportal.model.Job currentJob;
     private static Integer viewingCompanyId;
     private static String viewingCompanyName;
+    private static User contactUser;
+
+    public static User getContactUser() { return contactUser; }
+    public static void setContactUser(User user) { contactUser = user; }
 
     public static void setViewingCompany(Integer id, String name) {
         viewingCompanyId = id;

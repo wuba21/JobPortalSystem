@@ -12,15 +12,16 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User authenticate(String email, String password) {
-        String sql = "SELECT * FROM users WHERE email = ? AND (password = ? OR password = ?) AND is_active = TRUE";
+        String sql = "SELECT * FROM users WHERE email = ? AND is_active = TRUE";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
-            stmt.setString(2, com.jobportal.util.PasswordUtil.hashPassword(password));
-            stmt.setString(3, password);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return mapResultSetToUser(rs);
+                User user = mapResultSetToUser(rs);
+                if (com.jobportal.util.PasswordUtil.checkPassword(password, user.getPassword())) {
+                    return user;
+                }
             }
         } catch (SQLException e) {
             System.err.println("Authentication error: " + e.getMessage());
@@ -158,6 +159,45 @@ public class UserDAOImpl implements UserDAO {
             System.err.println("Count users error: " + e.getMessage());
         }
         return 0;
+    }
+
+    @Override
+    public int getEmployerIdByUserId(int userId) {
+        String sql = "SELECT id FROM employers WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Get employer ID error: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    @Override
+    public int createEmployer(int userId, String companyName, String industry) {
+        String sql = "INSERT INTO employers (user_id, company_name, industry) VALUES (?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, userId);
+            stmt.setString(2, companyName);
+            stmt.setString(3, industry);
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                try (ResultSet keys = stmt.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        return keys.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Create employer error: " + e.getMessage());
+        }
+        return -1;
     }
 
     private User mapResultSetToUser(ResultSet rs) throws SQLException {

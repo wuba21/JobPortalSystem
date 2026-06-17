@@ -47,7 +47,7 @@
 }
 
 /* Inputs */
-.text-field-custom, .text-area-custom, .combo-custom, .date-picker {
+.text-field-custom, .text-area-custom {
     -fx-background-color: #f8fafc;
     -fx-border-color: #cbd5e1;
     -fx-border-radius: 6;
@@ -58,7 +58,30 @@
     -fx-prompt-text-fill: #94a3b8;
 }
 
-.text-field-custom:focused, .text-area-custom:focused, .combo-custom:focused {
+.combo-custom, .date-picker {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-font-size: 14px;
+}
+
+.combo-custom .cell, .date-picker .text-input {
+    -fx-text-fill: #1e293b;
+    -fx-padding: 8 12;
+}
+
+.combo-custom .arrow-button, .date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 10 0 5;
+    -fx-cursor: hand;
+}
+
+.combo-custom .arrow, .date-picker .arrow {
+    -fx-background-color: #64748b;
+}
+
+.text-field-custom:focused, .text-area-custom:focused, .combo-custom:focused, .date-picker:focused {
     -fx-border-color: #3b82f6;
     -fx-background-color: white;
     -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.3), 8, 0, 0, 0);

@@ -44,6 +44,10 @@ public class JobService {
         return jobDAO.search(keyword, location, jobType);
     }
 
+    public List<Job> advancedSearch(String keyword, String location, String jobType, java.math.BigDecimal minSalary, java.math.BigDecimal maxSalary) {
+        return jobDAO.advancedSearch(keyword, location, jobType, minSalary, maxSalary);
+    }
+
     public List<Job> findRecentJobs() {
         return jobDAO.findRecentJobs();
     }

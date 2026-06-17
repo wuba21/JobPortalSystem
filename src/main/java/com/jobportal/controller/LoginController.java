@@ -61,7 +61,11 @@ public class LoginController {
         Task<User> loginTask = new Task<User>() {
             @Override
             protected User call() throws Exception {
-                return userService.login(email, password);
+                User user = userService.login(email, password);
+                if (user != null && "EMPLOYER".equals(user.getUserType())) {
+                    userService.getOrLoadEmployerId(user);
+                }
+                return user;
             }
         };
 
@@ -70,11 +74,11 @@ public class LoginController {
             loginProgress.setVisible(false);
             User user = loginTask.getValue();
             SessionManager.setCurrentUser(user);
-            AlertUtil.showInfo("Success", "Welcome back, " + user.getFullName() + "!");
+            com.jobportal.util.ToastUtil.showSuccess(loginButton.getScene().getWindow(), "Welcome back, " + user.getFullName() + "!");
             if (SessionManager.isAdmin()) {
                 MainApp.changeScene("dashboard.fxml", "Dashboard Overview");
             } else if (SessionManager.isEmployer()) {
-                MainApp.changeScene("employer_dashboard.fxml", "Employer Dashboard");
+                MainApp.setRoot("employer_dashboard.fxml", "Employer Dashboard");
             } else {
                 MainApp.changeScene("dashboard.fxml", "Dashboard Overview");
             }
@@ -85,9 +89,9 @@ public class LoginController {
             loginProgress.setVisible(false);
             Throwable ex = loginTask.getException();
             if (ex instanceof ValidationException) {
-                AlertUtil.showError("Login Failed", ex.getMessage());
+                com.jobportal.util.ToastUtil.showError(loginButton.getScene().getWindow(), ex.getMessage());
             } else {
-                AlertUtil.showError("Login Error", "An unexpected error occurred.");
+                com.jobportal.util.ToastUtil.showError(loginButton.getScene().getWindow(), "An unexpected error occurred.");
                 ex.printStackTrace();
             }
         });

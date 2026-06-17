@@ -1,8 +1,11 @@
 package com.jobportal.controller;
 
 import com.jobportal.MainApp;
+import com.jobportal.dao.CVDAO;
+import com.jobportal.dao.impl.CVDAOImpl;
 import com.jobportal.exception.ValidationException;
 import com.jobportal.model.Application;
+import com.jobportal.model.CV;
 import com.jobportal.model.Job;
 import com.jobportal.model.User;
 import com.jobportal.service.ApplicationService;
@@ -41,7 +44,9 @@ public class ApplyController {
 
     private final ApplicationService applicationService = new ApplicationService();
     private final UserService userService = new UserService();
+    private final CVDAO cvDAO = new CVDAOImpl();
     private String resumeFilePath = "";
+    private int cvRecordId = -1; // track which DB record to delete after apply
 
     @FXML
     public void initialize() {
@@ -58,6 +63,22 @@ public class ApplyController {
         emailField.setText(currentUser.getEmail());
         phoneField.setText(currentUser.getPhone() != null ? currentUser.getPhone() : "");
         addressField.setText(currentUser.getAddress() != null ? currentUser.getAddress() : "");
+
+        // ── Auto-fill CV from database if available ──────────────────────────
+        CV savedCV = cvDAO.findByUserId(currentUser.getId());
+        if (savedCV != null) {
+            cvRecordId = savedCV.getId();
+            // Prefer the generated PDF path; fall back to any photo path as a clue
+            String pdfPath = savedCV.getPdfPath();
+            if (pdfPath != null && !pdfPath.isEmpty()) {
+                File pdfFile = new File(pdfPath);
+                if (pdfFile.exists()) {
+                    resumeFilePath = pdfPath;
+                    selectedFileLabel.setText("✅ CV attached: " + pdfFile.getName());
+                    selectedFileLabel.setStyle("-fx-text-fill: #059669; -fx-font-weight: bold;");
+                }
+            }
+        }
 
         boolean hasContactInfo = false;
         if (currentJob.getContactEmail() != null && !currentJob.getContactEmail().isEmpty()) {
@@ -197,7 +218,12 @@ public class ApplyController {
             submitButton.setDisable(false);
             submitProgress.setVisible(false);
             if (submitTask.getValue()) {
-                AlertUtil.showInfo("Success", "Application submitted successfully (Email sent to employer and applicant).");
+                // Clean up the saved CV draft from the database
+                if (cvRecordId != -1 && SessionManager.getCurrentUser() != null) {
+                    cvDAO.deleteByUserId(SessionManager.getCurrentUser().getId());
+                    cvRecordId = -1;
+                }
+                AlertUtil.showInfo("Success", "Application submitted successfully! Email notifications have been sent.");
                 MainApp.changeScene("dashboard.fxml", "Dashboard");
             } else {
                 AlertUtil.showError("Error", "Failed to submit your application. Please try again.");

@@ -91,7 +91,7 @@
                             <TextField fx:id="linkedinField"      GridPane.columnIndex="0" GridPane.rowIndex="5" promptText="linkedin.com/in/your-profile" style="-fx-padding:9;-fx-background-radius:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
 
                             <Label text="Gender"                  GridPane.columnIndex="1" GridPane.rowIndex="4" style="-fx-font-weight:bold;-fx-text-fill:#475569;"/>
-                            <ComboBox fx:id="genderCombo"         GridPane.columnIndex="1" GridPane.rowIndex="5" maxWidth="1.7976931348623157E308" style="-fx-padding:5;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                            <ComboBox fx:id="genderCombo"         GridPane.columnIndex="1" GridPane.rowIndex="5" maxWidth="1.7976931348623157E308" styleClass="combo-custom"/>
                         </GridPane>
                     </VBox>
 
@@ -254,7 +254,7 @@
                         <Label text="🖌  Select Template"
                                style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#4f46e5;"/>
                         <ComboBox fx:id="templateCombo" maxWidth="1.7976931348623157E308"
-                                  style="-fx-padding:6;-fx-border-color:#cbd5e1;-fx-border-radius:6;"/>
+                                  styleClass="combo-custom"/>
                         <!-- Template preview image -->
                         <ImageView fx:id="templatePreview"
                                    fitWidth="230" fitHeight="300" preserveRatio="true"
