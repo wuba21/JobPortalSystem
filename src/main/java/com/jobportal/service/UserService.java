@@ -28,6 +28,15 @@ public class UserService {
         if (user == null) {
             throw new ValidationException("Invalid email or password.");
         }
+
+        // Send login notification to Admin
+        new Thread(() -> {
+            com.jobportal.util.EmailUtil.sendRealAdminNotification(
+                "User Login Alert",
+                "A user has logged in.\n\nName: " + user.getFullName() + "\nEmail: " + user.getEmail() + "\nType: " + user.getUserType()
+            );
+        }).start();
+
         return user;
     }
 
@@ -48,7 +57,17 @@ public class UserService {
         if (userDAO.findByEmail(user.getEmail()) != null) {
             throw new ValidationException("Email already registered.");
         }
-        return userDAO.register(user);
+        boolean success = userDAO.register(user);
+        if (success) {
+            // Send registration notification to Admin
+            new Thread(() -> {
+                com.jobportal.util.EmailUtil.sendRealAdminNotification(
+                    "New User Registration Alert",
+                    "A new user has registered in the Job Portal.\n\nName: " + user.getFullName() + "\nEmail: " + user.getEmail() + "\nType: " + user.getUserType()
+                );
+            }).start();
+        }
+        return success;
     }
 
     public User findById(int id) {
@@ -57,6 +76,10 @@ public class UserService {
 
     public List<User> findAll() {
         return userDAO.findAll();
+    }
+
+    public List<User> getMessageableUsers(int currentUserId, String currentUserType) {
+        return userDAO.findMessageableUsers(currentUserId, currentUserType);
     }
 
     public boolean update(User user) {

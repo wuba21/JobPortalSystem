@@ -205,6 +205,20 @@ public class ApplyController {
                         if (employerUserId != -1) {
                             com.jobportal.service.NotificationService notifService = new com.jobportal.service.NotificationService();
                             notifService.createNotification(employerUserId, "📩 New applicant applied: '" + currentUser.getFullName() + "' applied to '" + currentJob.getTitle() + "'");
+
+                            // Send real email to employer
+                            com.jobportal.model.User employer = new com.jobportal.service.UserService().findById(employerUserId);
+                            if (employer != null && employer.getEmail() != null) {
+                                String subject = "📩 New Application Received — " + currentJob.getTitle();
+                                String body = "Hello,\n\n"
+                                        + currentUser.getFullName() + " has just applied for your job posting:\n"
+                                        + "  Job Title : " + currentJob.getTitle() + "\n"
+                                        + "  Applicant : " + currentUser.getFullName() + "\n"
+                                        + "  Email     : " + currentUser.getEmail() + "\n\n"
+                                        + "Please log in to the JobPortal system to review the application.\n\n"
+                                        + "— JobPortal System";
+                                new Thread(() -> com.jobportal.util.EmailUtil.sendUserEmail(employer.getEmail(), subject, body)).start();
+                            }
                         }
                     } catch (Exception ex) {
                         System.err.println("Notify employer error: " + ex.getMessage());

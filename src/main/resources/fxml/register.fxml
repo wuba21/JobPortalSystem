@@ -50,6 +50,7 @@
                                 <PasswordField fx:id="passwordField" promptText="Password" style="-fx-pref-height: 40px;" styleClass="text-field-custom" />
                                 <javafx.scene.control.ToggleButton fx:id="showPasswordBtn" text="👁" onAction="#togglePasswordVisibility" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-text-fill: #666; -fx-font-size: 14px; -fx-padding: 0 10 0 0;" />
                             </StackPane>
+                            <Label fx:id="passwordErrorLabel" style="-fx-text-fill: #e11d48; -fx-font-size: 12px; -fx-wrap-text: true;" visible="false" managed="false" />
                         </VBox>
                         
                         <!-- Confirm Password -->

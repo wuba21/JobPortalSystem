@@ -33,6 +33,8 @@ public class RegisterController {
     @FXML private TextField confirmPasswordTextField;
     @FXML private ToggleButton showConfirmPasswordBtn;
 
+    @FXML private Label passwordErrorLabel;
+
     @FXML
     public void initialize() {
         userTypeCombo.getItems().addAll("JOB_SEEKER", "EMPLOYER");
@@ -98,11 +100,22 @@ public class RegisterController {
 
     @FXML
     private void handleRegister() {
+        if (passwordErrorLabel != null) {
+            passwordErrorLabel.setVisible(false);
+            passwordErrorLabel.setManaged(false);
+        }
+
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
         if (!password.equals(confirmPassword)) {
-            com.jobportal.util.ToastUtil.showError(fullNameField.getScene().getWindow(), "Passwords do not match.");
+            if (passwordErrorLabel != null) {
+                passwordErrorLabel.setText("Passwords do not match.");
+                passwordErrorLabel.setVisible(true);
+                passwordErrorLabel.setManaged(true);
+            } else {
+                com.jobportal.util.ToastUtil.showError(fullNameField.getScene().getWindow(), "Passwords do not match.");
+            }
             return;
         }
 
@@ -128,7 +141,18 @@ public class RegisterController {
                 com.jobportal.util.ToastUtil.showError(fullNameField.getScene().getWindow(), "Registration failed. Please try again.");
             }
         } catch (ValidationException e) {
-            com.jobportal.util.ToastUtil.showError(fullNameField.getScene().getWindow(), e.getMessage());
+            String msg = e.getMessage();
+            if (msg.contains("Password") || msg.contains("character") || msg.contains("digit") || msg.contains("letter")) {
+                if (passwordErrorLabel != null) {
+                    passwordErrorLabel.setText(msg);
+                    passwordErrorLabel.setVisible(true);
+                    passwordErrorLabel.setManaged(true);
+                } else {
+                    com.jobportal.util.ToastUtil.showError(fullNameField.getScene().getWindow(), msg);
+                }
+            } else {
+                com.jobportal.util.ToastUtil.showError(fullNameField.getScene().getWindow(), msg);
+            }
         }
     }
 

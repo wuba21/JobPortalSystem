@@ -104,6 +104,34 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public List<User> findMessageableUsers(int currentUserId, String currentUserType) {
+        List<User> users = new ArrayList<>();
+        String sql;
+        // Admin can message everyone
+        // Employer can message Job Seekers and Admin
+        // Job Seeker can message Employers and Admin
+        if ("ADMIN".equals(currentUserType)) {
+            sql = "SELECT * FROM users WHERE id != ? AND is_active = TRUE ORDER BY user_type, full_name";
+        } else if ("EMPLOYER".equals(currentUserType)) {
+            sql = "SELECT * FROM users WHERE id != ? AND is_active = TRUE AND user_type IN ('JOB_SEEKER','ADMIN') ORDER BY user_type, full_name";
+        } else {
+            // JOB_SEEKER
+            sql = "SELECT * FROM users WHERE id != ? AND is_active = TRUE AND user_type IN ('EMPLOYER','ADMIN') ORDER BY user_type, full_name";
+        }
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, currentUserId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                users.add(mapResultSetToUser(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Find messageable users error: " + e.getMessage());
+        }
+        return users;
+    }
+
+    @Override
     public boolean update(User user) {
         String sql = "UPDATE users SET full_name = ?, email = ?, phone = ?, address = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();

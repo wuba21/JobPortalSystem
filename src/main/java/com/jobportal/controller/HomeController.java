@@ -5,7 +5,9 @@ import com.jobportal.util.AlertUtil;
 import com.jobportal.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
 
 public class HomeController {
 
@@ -92,5 +94,25 @@ public class HomeController {
         javafx.scene.control.Label lbl = (javafx.scene.control.Label) event.getSource();
         lbl.setScaleX(1.0);
         lbl.setScaleY(1.0);
+    }
+
+    @FXML
+    private void handleEmailClick(javafx.scene.input.MouseEvent event) {
+        openLink("mailto:wubantetil@gmail.com");
+    }
+
+    @FXML
+    private void handlePhoneClick(javafx.scene.input.MouseEvent event) {
+        openLink("tel:+251939304457");
+    }
+
+    private void openLink(String url) {
+        try {
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(new URI(url));
+            }
+        } catch (Exception e) {
+            System.err.println("Could not open link: " + e.getMessage());
+        }
     }
 }

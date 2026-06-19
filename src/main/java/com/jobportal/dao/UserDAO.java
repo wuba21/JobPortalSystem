@@ -9,6 +9,7 @@ public interface UserDAO {
     User findById(int id);
     User findByEmail(String email);
     List<User> findAll();
+    List<User> findMessageableUsers(int currentUserId, String currentUserType);
     boolean update(User user);
     boolean updatePassword(int userId, String newPassword);
     boolean delete(int id);

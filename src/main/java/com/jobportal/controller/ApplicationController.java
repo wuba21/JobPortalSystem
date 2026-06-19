@@ -124,15 +124,36 @@ public class ApplicationController {
                     String newStatus = statusBox.getValue();
                     if (newStatus != null && applicationService.updateStatus(app.getId(), newStatus)) {
 
-                        // Send Email Notification
+                        // Send real email to job seeker
                         com.jobportal.model.User applicant = userService.findById(app.getUserId());
                         if (applicant != null && applicant.getEmail() != null) {
-                            com.jobportal.util.EmailUtil.sendNotificationEmail(
-                                    applicant.getEmail(),
-                                    "Application Status Update: " + newStatus,
-                                    "Dear " + applicant.getFullName() + ",\n\nYour application for the position of '"
-                                            + app.getJobTitle() + "' has been marked as: " + newStatus
-                                            + ".\n\nThank you,\nJob Portal Team");
+                            String emailSubject;
+                            String emailBody;
+                            if ("ACCEPTED".equals(newStatus)) {
+                                emailSubject = "🎉 Congratulations! Application Accepted — " + app.getJobTitle();
+                                emailBody = "Dear " + applicant.getFullName() + ",\n\n"
+                                        + "Great news! Your application for the position of:\n"
+                                        + "  Job Title: " + app.getJobTitle() + "\n\n"
+                                        + "has been ACCEPTED! ✅\n\n"
+                                        + "Please log in to the JobPortal system for further details.\n\n"
+                                        + "Best of luck!\n— JobPortal System";
+                            } else if ("REJECTED".equals(newStatus)) {
+                                emailSubject = "Application Update — " + app.getJobTitle();
+                                emailBody = "Dear " + applicant.getFullName() + ",\n\n"
+                                        + "We regret to inform you that your application for:\n"
+                                        + "  Job Title: " + app.getJobTitle() + "\n\n"
+                                        + "has not been selected at this time.\n\n"
+                                        + "Don't give up! Keep applying to other opportunities.\n\n"
+                                        + "— JobPortal System";
+                            } else {
+                                emailSubject = "Application Status Update — " + app.getJobTitle();
+                                emailBody = "Dear " + applicant.getFullName() + ",\n\n"
+                                        + "Your application for '" + app.getJobTitle() + "' status is now: " + newStatus + "\n\n"
+                                        + "— JobPortal System";
+                            }
+                            final String fs = emailSubject;
+                            final String fb = emailBody;
+                            new Thread(() -> com.jobportal.util.EmailUtil.sendUserEmail(applicant.getEmail(), fs, fb)).start();
                         }
 
                         // Create In-App Notification

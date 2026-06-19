@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class PasswordUtil {
 
     private static final int BCRYPT_ROUNDS = 12;
-    private static final int MIN_PASSWORD_LENGTH = 12;
+    private static final int MIN_PASSWORD_LENGTH = 8;
     private static final Pattern UPPERCASE_PATTERN = Pattern.compile("[A-Z]");
     private static final Pattern LOWERCASE_PATTERN = Pattern.compile("[a-z]");
     private static final Pattern DIGIT_PATTERN = Pattern.compile("[0-9]");
@@ -49,7 +49,7 @@ public class PasswordUtil {
 
     /**
      * Validate password strength requirements.
-     * Requirements: 12+ chars, uppercase, lowercase, digit, special character.
+     * Requirements: 8+ chars, uppercase, lowercase, digit, special character.
      * 
      * @param password Plain text password to validate
      * @return true if password meets strength requirements

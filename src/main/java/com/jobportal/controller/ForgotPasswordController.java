@@ -13,6 +13,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
 
 public class ForgotPasswordController {
 
@@ -49,6 +50,9 @@ public class ForgotPasswordController {
     private TextField confirmPasswordTextField;
     @FXML
     private ToggleButton showConfirmPasswordBtn;
+
+    @FXML
+    private Label passwordErrorLabel;
 
     private final UserService userService = new UserService();
     private String targetEmail;
@@ -96,6 +100,11 @@ public class ForgotPasswordController {
 
     @FXML
     private void handleResetPassword() {
+        if (passwordErrorLabel != null) {
+            passwordErrorLabel.setVisible(false);
+            passwordErrorLabel.setManaged(false);
+        }
+
         String appPassword = otpField.getText().trim();
         String newPassword = newPasswordField.getText();
         String confirmPassword = confirmPasswordField.getText();
@@ -106,14 +115,26 @@ public class ForgotPasswordController {
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            com.jobportal.util.ToastUtil.showError(resetButton.getScene().getWindow(), "Passwords do not match.");
+            if (passwordErrorLabel != null) {
+                passwordErrorLabel.setText("Passwords do not match.");
+                passwordErrorLabel.setVisible(true);
+                passwordErrorLabel.setManaged(true);
+            } else {
+                com.jobportal.util.ToastUtil.showError(resetButton.getScene().getWindow(), "Passwords do not match.");
+            }
             return;
         }
 
         // Check password strength
         String strengthError = com.jobportal.util.PasswordUtil.getPasswordStrengthError(newPassword);
         if (strengthError != null) {
-            com.jobportal.util.ToastUtil.showError(resetButton.getScene().getWindow(), strengthError);
+            if (passwordErrorLabel != null) {
+                passwordErrorLabel.setText(strengthError);
+                passwordErrorLabel.setVisible(true);
+                passwordErrorLabel.setManaged(true);
+            } else {
+                com.jobportal.util.ToastUtil.showError(resetButton.getScene().getWindow(), strengthError);
+            }
             return;
         }
 

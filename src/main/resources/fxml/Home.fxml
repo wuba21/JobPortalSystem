@@ -68,9 +68,19 @@
                         <VBox spacing="10" prefWidth="200">
                             <Label text="Contact Us" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
                             <VBox spacing="10" style="-fx-padding: 10 0 0 0;">
-                                <Label text="📧 admin@jobportal.com" style="-fx-text-fill: #94a3b8; -fx-font-size: 14px;"/>
-                                <Label text="📞 +251987654321" style="-fx-text-fill: #94a3b8; -fx-font-size: 14px;"/>
-                                <Label text="📍 UOG, Ethiopia, informatics, comsce Lab 301 " wrapText="true" style="-fx-text-fill: #94a3b8; -fx-font-size: 14px;"/>
+                                <Label text="📧 wubantetil@gmail.com"
+                                       onMouseClicked="#handleEmailClick"
+                                       onMouseEntered="#handleFooterHover"
+                                       onMouseExited="#handleFooterExit"
+                                       style="-fx-text-fill: #94a3b8; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                                <Label text="📞 +251939304457"
+                                       onMouseClicked="#handlePhoneClick"
+                                       onMouseEntered="#handleFooterHover"
+                                       onMouseExited="#handleFooterExit"
+                                       style="-fx-text-fill: #94a3b8; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                                <Label text="📍 UOG, Ethiopia, Informatics College, Comp Sci Dept."
+                                       wrapText="true"
+                                       style="-fx-text-fill: #94a3b8; -fx-font-size: 14px;"/>
                             </VBox>
                         </VBox>
 

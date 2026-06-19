@@ -7,6 +7,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
+import java.awt.Desktop;
+import java.net.URI;
 
 public class ContactController {
 
@@ -78,5 +80,37 @@ public class ContactController {
         Thread bgThread = new Thread(sendTask);
         bgThread.setDaemon(true);
         bgThread.start();
+    }
+
+    @FXML
+    private void handleEmailClick(javafx.scene.input.MouseEvent event) {
+        openLink("mailto:wubantetil@gmail.com");
+    }
+
+    @FXML
+    private void handlePhoneClick(javafx.scene.input.MouseEvent event) {
+        openLink("tel:+251939304457");
+    }
+
+    @FXML
+    private void handleContactHover(javafx.scene.input.MouseEvent event) {
+        javafx.scene.control.Label lbl = (javafx.scene.control.Label) event.getSource();
+        lbl.setStyle("-fx-font-size: 15px; -fx-text-fill: #0ea5e9; -fx-cursor: hand; -fx-underline: true;");
+    }
+
+    @FXML
+    private void handleContactExit(javafx.scene.input.MouseEvent event) {
+        javafx.scene.control.Label lbl = (javafx.scene.control.Label) event.getSource();
+        lbl.setStyle("-fx-font-size: 15px; -fx-text-fill: #475569; -fx-cursor: hand; -fx-underline: false;");
+    }
+
+    private void openLink(String url) {
+        try {
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
+            }
+        } catch (Exception e) {
+            System.err.println("Could not open link: " + e.getMessage());
+        }
     }
 }

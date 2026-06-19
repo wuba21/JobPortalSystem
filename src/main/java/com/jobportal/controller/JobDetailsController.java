@@ -160,12 +160,16 @@ public class JobDetailsController {
 
     @FXML
     private void handleFacebook() {
-        openWebpage(currentJob != null && currentJob.getWebsiteLink() != null ? currentJob.getWebsiteLink() : "https://facebook.com");
+        String url = (currentJob != null && currentJob.getWebsiteLink() != null && !currentJob.getWebsiteLink().trim().isEmpty()) ? 
+            currentJob.getWebsiteLink() : "https://web.facebook.com/profile.php?id=100077897349623";
+        openWebpage(url);
     }
 
     @FXML
     private void handleLinkedIn() {
-        openWebpage(currentJob != null && currentJob.getLinkedinLink() != null ? currentJob.getLinkedinLink() : "https://linkedin.com");
+        String url = (currentJob != null && currentJob.getLinkedinLink() != null && !currentJob.getLinkedinLink().trim().isEmpty()) ? 
+            currentJob.getLinkedinLink() : "https://www.linkedin.com/in/wubante-tilahun-776ab7377/";
+        openWebpage(url);
     }
 
     @FXML

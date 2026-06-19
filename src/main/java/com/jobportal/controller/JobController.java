@@ -396,9 +396,12 @@ public class JobController {
         HBox socialsBox = new HBox(15);
         socialsBox.setAlignment(Pos.CENTER);
 
+        String fbLink = (job.getWebsiteLink() != null && !job.getWebsiteLink().trim().isEmpty()) ? job.getWebsiteLink() : "https://web.facebook.com/profile.php?id=100077897349623";
+        String linkedinLink = (job.getLinkedinLink() != null && !job.getLinkedinLink().trim().isEmpty()) ? job.getLinkedinLink() : "https://www.linkedin.com/in/wubante-tilahun-776ab7377/";
+
         Button tgBtn = createSocialButton("Telegram", job.getTelegramLink(), "#0088cc");
-        Button inBtn = createSocialButton("LinkedIn", job.getLinkedinLink(), "#0077b5");
-        Button fbBtn = createSocialButton("Facebook", job.getWebsiteLink(), "#1877f2");
+        Button inBtn = createSocialButton("LinkedIn", linkedinLink, "#0077b5");
+        Button fbBtn = createSocialButton("Facebook", fbLink, "#1877f2");
 
         socialsBox.getChildren().addAll(tgBtn, inBtn, fbBtn);
 
